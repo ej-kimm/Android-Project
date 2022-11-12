@@ -25,5 +25,7 @@ class MainActivity : AppCompatActivity() {
             Firebase.auth.signOut()
             finish()
         }
+
+        // 깃허브 연동 테스트용
     }
 }
