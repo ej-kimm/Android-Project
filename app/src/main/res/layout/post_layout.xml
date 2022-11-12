@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/publisher_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/my_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/publisher_id2"
+        app:layout_constraintTop_toBottomOf="@+id/publisher_id2"
+        tools:srcCompat="@tools:sample/avatars"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/publisher_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/publisher_img"
+        app:layout_constraintStart_toEndOf="@+id/publisher_img"
+        app:layout_constraintTop_toTopOf="@+id/publisher_img" />
+
+    <ImageView
+        android:id="@+id/post_img"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/publisher_img"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <Button
+        android:id="@+id/commentbtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_baseline_add_comment_24"
+        app:layout_constraintStart_toEndOf="@+id/favorite_btn"
+        app:layout_constraintTop_toBottomOf="@+id/post_img" />
+
+    <ToggleButton
+        android:id="@+id/favorite_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/favorite_btn"
+        android:textOff=""
+        android:textOn=""
+        android:checked="false"
+        app:layout_constraintStart_toStartOf="@+id/post_img"
+        app:layout_constraintTop_toBottomOf="@+id/post_img" />
+
+    <TextView
+        android:id="@+id/publisher_id2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/favorite_btn"
+        app:layout_constraintTop_toBottomOf="@+id/favorite_btn" />
+
+    <TextView
+        android:id="@+id/post_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/publisher_id2"
+        app:layout_constraintTop_toTopOf="@+id/publisher_id2" />
+
+    <EditText
+        android:id="@+id/add_comment_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="32dp"
+        android:textSize="14sp"
+        android:hint="댓글 추가..."
+        app:layout_constraintStart_toEndOf="@+id/my_img"
+        app:layout_constraintTop_toTopOf="@+id/my_img" />
+</androidx.constraintlayout.widget.ConstraintLayout>
