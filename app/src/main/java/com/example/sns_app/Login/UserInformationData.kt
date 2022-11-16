@@ -1,7 +1,7 @@
 package com.example.sns_app.Login
 
-data class UserInformation(val nickname: String, val password: String, val birth: String,
-                           val email: String, val userID: String) {
+data class UserInformationData(val nickname: String, val password: String, val birth: String,
+                               val email: String, val userID: String) {
     fun userHashMap(): HashMap<String, String> {
         return hashMapOf(
             "name" to nickname,
