@@ -3,7 +3,6 @@ package com.example.sns_app
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.TestViewModel
 import com.example.sns_app.databinding.PostLayoutBinding
 
 // 리사이클러뷰 어댑터

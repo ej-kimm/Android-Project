@@ -1,14 +1,14 @@
-package com.example.sns_app
+package com.example.sns_app.Login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.sns_app.MainActivity
 import com.example.sns_app.databinding.ActivityLoginBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import java.text.DecimalFormat
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
@@ -36,11 +36,11 @@ class LoginActivity : AppCompatActivity() {
         Firebase.auth.signInWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 if(it.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java)) // 메인메뉴 Activity 연결해주기!!!!!
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
                     Log.w("LoginActivity", "signInWithEmail", it.exception)
-                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
                 }
             }
     }
