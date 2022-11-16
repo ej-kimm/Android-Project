@@ -51,7 +51,7 @@ class SignupActivity : AppCompatActivity() {
 
     // collection에 user의 정보를 담음(식별자는 UID)
     private fun addInformation(users: UserInformation) {
-        val itemMap = users.userFindHashMap();
+        val itemMap = users.userHashMap();
         usersCollectionRef.add(itemMap) // 고유 UID 밑에 아이디, 이름, 생일, 비밀번호, 이메일저장
     }
 
