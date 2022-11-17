@@ -3,6 +3,8 @@ package com.example.sns_app
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,28 +29,49 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
 }
 
 class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그먼트, 검색 프레그먼트
-    lateinit var searchAdapter : SearchAdapter
-    private val data = mutableListOf<SearchData>()
-    private val disList = mutableListOf<SearchData>()
-
+    lateinit var searchAdapter: SearchAdapter
+    private val searchViewModel by viewModels<SearchViewModel>()
+    //private val data = mutableListOf<SearchData>()
+    //private val disList = mutableListOf<SearchData>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
         val binding = SearchLayoutBinding.bind(view)
+        val recyclerView = binding.recyclerView
 
-        var recyclerView = binding.recyclerView
+        //키보드가 recyclerview랑 같이 안올라가도록
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        //searchView 에서 검색되는 단어 검색
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+            override fun onQueryTextChange(p0: String?): Boolean {
+                // text 변경될 때마다 불리는 콜백 함수
+                if (p0 == "") {
+                    searchViewModel.emptyInput()
+                } else if (p0 != null) {
+                    searchViewModel.searchingList(p0)
+                }
+                return false
+            }
+        })
+        //검색되는 단어가 있는지 observe
+        searchViewModel.retrieved.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                searchAdapter.setSearchDataList(emptyList())
+                return@observe
+            }
+            searchAdapter.setSearchDataList(it)
+        }
+        //검색 x
+        searchViewModel.searchData.observe(viewLifecycleOwner) {
+            searchAdapter.setSearchDataList(it)
+        }
 
         searchAdapter = SearchAdapter(this)
         recyclerView.adapter = searchAdapter
         recyclerView.addItemDecoration(VerticalItemDecorator(10))
         recyclerView.addItemDecoration(HorizontalItemDecorator(10))
-
-        data.apply {
-            add(SearchData(id="jjanggu", name="짱구", img=R.drawable.profile))
-            add(SearchData(id="chulsu", name="철수", img=R.drawable.profile))
-            add(SearchData(id="manggu", name="맹구", img=R.drawable.profile))
-            searchAdapter.datas = data
-            searchAdapter.notifyDataSetChanged()
-        }
     }
 }
 

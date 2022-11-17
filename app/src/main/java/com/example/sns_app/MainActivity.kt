@@ -3,6 +3,7 @@ package com.example.sns_app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sns_app.Login.LoginActivity
@@ -18,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //검색 기능에서 키보드 자판이 화면 끌고 올라가는 것을 방지하기 위함(최상위 Activity에 먼저 적용해야함)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         if(Firebase.auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))

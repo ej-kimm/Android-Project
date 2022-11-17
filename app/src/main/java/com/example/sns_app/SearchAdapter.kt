@@ -9,20 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
+class SearchAdapter(private val context: Fragment) :
+    RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
+    private var items: List<SearchData> = emptyList()
 
-class SearchAdapter(private val context: Fragment):RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
-
-    var datas = mutableListOf<SearchData>()
-
-    override fun onCreateViewHolder(parent:ViewGroup, viewType:Int) : ViewHolder{
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search,parent,false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.recycler_search, parent, false)
         return ViewHolder(view)
     }
-    override fun getItemCount() : Int = datas.size
 
-    override fun onBindViewHolder(holder : ViewHolder,position:Int){
-        holder.bind(datas[position])
+    override fun getItemCount(): Int = items.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items[position])
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -35,5 +36,10 @@ class SearchAdapter(private val context: Fragment):RecyclerView.Adapter<SearchAd
             txtName.text = item.name
             Glide.with(itemView).load(item.img).into(imgProfile)
         }
+    }
+
+    fun setSearchDataList(list: List<SearchData>) {
+        items = list
+        notifyDataSetChanged()
     }
 }

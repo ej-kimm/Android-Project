@@ -9,6 +9,7 @@ import com.example.sns_app.databinding.PostLayoutBinding
 class MyAdapter(private val viewModel: TestViewModel) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
         inner class ViewHolder(private val binding: PostLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun setContents(pos: Int) {
+
             // 하단의 코드는 UI 구성 확인을 위한 테스트 코드임
             val item = viewModel.items[pos]
             binding.publisherId.text = item.publisher_id
