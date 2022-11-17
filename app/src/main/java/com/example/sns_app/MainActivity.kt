@@ -1,4 +1,4 @@
-package com.example.sns_app.Home
+package com.example.sns_app
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sns_app.Login.LoginActivity
-import com.example.sns_app.R
 import com.example.sns_app.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
