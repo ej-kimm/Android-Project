@@ -1,12 +1,12 @@
-package com.example.sns_app
+package com.example.sns_app.Home
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.sns_app.Login.LoginActivity
+import com.example.sns_app.R
 import com.example.sns_app.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
@@ -20,8 +20,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //검색 기능에서 키보드 자판이 화면 끌고 올라가는 것을 방지하기 위함(최상위 Activity에 먼저 적용해야함)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        // 검색 기능에서 키보드 자판이 화면 끌고 올라가는 것을 방지하기 위함(최상위 Activity에 먼저 적용해야함)
+//        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        // 레이아웃 수정으로 해결, 방식 논의 후 결정 예정
 
         if(Firebase.auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))

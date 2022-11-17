@@ -1,8 +1,10 @@
-package com.example.sns_app
+package com.example.sns_app.Home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sns_app.R
+import com.example.sns_app.TestViewModel
 import com.example.sns_app.databinding.PostLayoutBinding
 
 // 리사이클러뷰 어댑터

@@ -8,10 +8,18 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.sns_app.Follow.FollowListActivity
+import com.example.sns_app.Home.MyAdapter
+import com.example.sns_app.Search.HorizontalItemDecorator
+import com.example.sns_app.Search.SearchAdapter
+import com.example.sns_app.Search.SearchViewModel
+import com.example.sns_app.Search.VerticalItemDecorator
 
 import com.example.sns_app.databinding.HomeFragmentBinding
 import com.example.sns_app.databinding.MypageFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
+
+// 게시글 기능 구현 이후 분리
 
 class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,7 +105,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 
         //임시적으로 "팔로잉" textView를 클릭하면 followList로 이동
         binding.following.setOnClickListener{
-            val intent = Intent(context,FollowListActivity::class.java)
+            val intent = Intent(context, FollowListActivity::class.java)
             startActivity(intent)
         }
 

@@ -50,16 +50,16 @@ class SignupActivity : AppCompatActivity() {
     }
 
     // collection에 user의 정보를 담음(식별자는 UID)
-    private fun addInformation(users: UserInformationData) {
+    private fun addInformation(users: UserInformationData, uid: String) {
         val itemMap = users.userHashMap();
-        usersCollectionRef.add(itemMap) // 고유 UID 밑에 아이디, 이름, 생일, 비밀번호, 이메일저장
+        usersCollectionRef.document(uid).set(itemMap) // 고유 UID 밑에 아이디, 이름, 생일, 비밀번호, 이메일저장
     }
 
     private fun doSignUp(users: UserInformationData) {
         Firebase.auth.createUserWithEmailAndPassword(users.email, users.password)
             .addOnCompleteListener(this) {
                 if(it.isSuccessful) {
-                    addInformation(users) // collection에 user의 정보를 담음
+                    addInformation(users, Firebase.auth.currentUser!!.uid) // collection에 user의 정보를 담음, uid 인자 추가
                     Toast.makeText(this, "환영합니다. 로그인을 시도해주세요", Toast.LENGTH_SHORT).show()
                     finish() // 회원가입 완료하면 로그인창으로 돌아가서 로그인하도록 함
                 } else {
