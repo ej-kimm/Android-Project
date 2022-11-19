@@ -1,6 +1,5 @@
 package com.example.sns_app
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -16,8 +15,15 @@ import com.example.sns_app.Search.SearchViewModel
 import com.example.sns_app.Search.VerticalItemDecorator
 
 import com.example.sns_app.databinding.HomeFragmentBinding
-import com.example.sns_app.databinding.MypageFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 // 게시글 기능 구현 이후 분리
 
@@ -88,31 +94,5 @@ class PostFragment : Fragment(R.layout.fragment2_layout) { // 테스트 프레�
         super.onViewCreated(view, savedInstanceState)
        // val binding = FragmentLayoutBinding.bind(view) //에러나서 잠시 주석처리
 
-    }
-}
-
-
-class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 프레그먼트
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-        val binding = MypageFragmentBinding.bind(view)
-        
-        // 하단의 코드는 UI 구성 확인을 위한 테스트 코드임
-        binding.postCount.text = "1"
-        binding.followerCount.text = "2"
-        binding.followingCount.text = "10"
-        binding.mypageMyImg.setImageResource(R.drawable.ic_baseline_person_24)
-
-        //임시적으로 "팔로잉" textView를 클릭하면 followList로 이동
-        binding.following.setOnClickListener{
-            val intent = Intent(context, FollowListActivity::class.java)
-            startActivity(intent)
-        }
-
-        val viewModel : TestViewModel by viewModels()
-
-        binding.mypageRecyclerview.adapter = MyAdapter(viewModel)
-        binding.mypageRecyclerview.layoutManager = LinearLayoutManager(activity)
-        binding.mypageRecyclerview.setHasFixedSize(true) // same height
     }
 }

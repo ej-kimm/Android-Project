@@ -8,7 +8,8 @@ data class UserInformationData(val nickname: String, val password: String, val b
             "password" to password,
             "birth" to birth,
             "email" to email,
-            "userID" to userID
+            "userID" to userID,
+            "profileImage" to "default" // 회원가입 시 프로필 이미지 필드 추가, default
         )
     }
 }
