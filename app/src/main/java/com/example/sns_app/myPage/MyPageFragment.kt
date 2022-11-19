@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Follow.FollowListActivity
 import com.example.sns_app.Home.MyAdapter
 import com.example.sns_app.R
@@ -95,7 +97,8 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     private fun displayImageRef(imageRef: StorageReference?, view: ImageView) { // 이미지를 화면에 띄움
         imageRef?.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-            view.setImageBitmap(bmp)
+//            view.setImageBitmap(bmp)
+            Glide.with(view).load(bmp).apply(RequestOptions.circleCropTransform()).into(view) // Glide 라이브러리 활용, Circle shape
         }?.addOnFailureListener {
             // Failed to download the image
         }

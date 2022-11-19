@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation 'jp.wasabeef:glide-transformations:4.3.0' // 프로필 사진 crop을 위한 라이브러리
     implementation 'androidx.activity:activity-ktx:1.6.1' // 사진 선택을 위한 라이브러리
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'

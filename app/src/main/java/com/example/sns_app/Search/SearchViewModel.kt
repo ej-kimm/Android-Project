@@ -3,15 +3,16 @@ package com.example.sns_app.Search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.sns_app.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class SearchViewModel : ViewModel() {
 
     var db : FirebaseFirestore = Firebase.firestore
     var itemsCollectionRef = db.collection("usersInformation")
+    private val storage = Firebase.storage
 
     private val _searchData = MutableLiveData<List<SearchData>>()
     val searchData: LiveData<List<SearchData>> get() = _searchData
@@ -58,11 +59,12 @@ class SearchViewModel : ViewModel() {
 
         itemsCollectionRef.addSnapshotListener { snapshot, error ->
             for (document in snapshot!!) {
+                val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
                 list.add(
                     SearchData(
                         id = document["userID"].toString(),
                         name = document["name"].toString(),
-                        R.drawable.profile
+                        img = profileImgRef // 참조를 전달
                     )
                 )
             }
