@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.widget.SearchView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -140,16 +141,26 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE) {
-            if (resultCode == Activity.RESULT_OK) {
-                data ?: return
-                uri = data.data as Uri
-                binding.uploadImage.setImageURI(uri)
-            } else if (resultCode == Activity.RESULT_CANCELED) {
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            uri = result.data?.data
+            binding.uploadImage.setImageURI(uri)
+        } else {
+//            finish()
+        }
+    }
 
-            }
+    // 갤러리에서 이미지 선택
+    private fun choosePictures() {
+        if (activity?.let {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+            } == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = MediaStore.Images.Media.CONTENT_TYPE
+            intent.type = "image/*"
+            launcher.launch(intent)
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
         }
     }
 
@@ -180,25 +191,7 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
 
     }
 
-    // 갤러리에서 이미지 선택
-    private fun choosePictures() {
-        if (activity?.let {
-                ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
-            } == PackageManager.PERMISSION_GRANTED) {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = MediaStore.Images.Media.CONTENT_TYPE
-            intent.type = "image/*"
-            startActivityForResult(
-                intent,
-                PICK_IMAGE
-            )
-        } else {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
-        }
-    }
-
     companion object {
-        const val PICK_IMAGE = 1
         const val UPLOAD_FOLDER = "PostingImage/"
     }
 }
