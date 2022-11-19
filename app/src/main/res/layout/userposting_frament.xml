@@ -40,6 +40,8 @@
             android:id="@+id/upload_text"
             android:layout_width="match_parent"
             android:layout_height="170dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:gravity="start|top"
             android:hint="문구 입력..."
             android:inputType="textMultiLine"
@@ -49,13 +51,19 @@
             android:id="@+id/maxText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="(0/100)" />
 
         <Button
             android:id="@+id/btn_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="공유" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#5E62A8"
+            android:text="공유"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
 </LinearLayout>
