@@ -1,29 +1,40 @@
 package com.example.sns_app
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sns_app.Follow.FollowListActivity
 import com.example.sns_app.Home.MyAdapter
+import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.Search.HorizontalItemDecorator
 import com.example.sns_app.Search.SearchAdapter
 import com.example.sns_app.Search.SearchViewModel
 import com.example.sns_app.Search.VerticalItemDecorator
-
 import com.example.sns_app.databinding.HomeFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
+import com.example.sns_app.databinding.UserpostingFramentBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 // 게시글 기능 구현 이후 분리
 
@@ -88,10 +99,106 @@ class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그
     }
 }
 
-class PostFragment : Fragment(R.layout.fragment2_layout) { // 테스트 프레그먼트, 게시글 추가 프레그먼트
+// 게시글 추가 프레그먼트
+class PostFragment : Fragment(R.layout.userposting_frament) {
+    lateinit var binding: UserpostingFramentBinding
+    private lateinit var storage: FirebaseStorage
+    private lateinit var auth: FirebaseAuth
+    private val db = Firebase.firestore
+    private val postingCollectionRef = db.collection("posting")
+    private var uri: Uri? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // val binding = FragmentLayoutBinding.bind(view) //에러나서 잠시 주석처리
+        binding = UserpostingFramentBinding.bind(view)
+        storage = Firebase.storage
+        auth = Firebase.auth
 
+        // 갤러리에서 사진 선택
+        binding.uploadImage.setOnClickListener { // 사진 눌렀을 때 사진 선택 가능
+            choosePictures()
+        }
+        binding.textView5.setOnClickListener { // 텍스트 눌렀을 때 사진 선택 가능
+            choosePictures()
+        }
+
+        // 실시간 글자수 검색
+        binding.uploadText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                val input = binding.uploadText.text.toString()
+                binding.maxText.text = "(${input.length}/100)"
+            }
+            override fun afterTextChanged(s: Editable) {}
+        })
+
+        // 공유 버튼 누르면 사진 업로드 완료
+        binding.btnUpload.setOnClickListener {
+            uploadFile(binding.uploadText.text)
+            binding.uploadText.setText("") // 업로드 완료. 텍스트 초기화
+            binding.uploadImage.setImageResource(R.drawable.select) // 업로드 완료. 이미지뷰 초기화
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                data ?: return
+                uri = data.data as Uri
+                binding.uploadImage.setImageURI(uri)
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+
+            }
+        }
+    }
+
+    // 스토리지에 파일 업로드
+    private fun uploadFile(context: Editable) {
+        val storageRef = storage.reference // reference to root
+        val time = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        var file = "IMAGE_$time.png"
+        val imageRef = storageRef.child(UPLOAD_FOLDER).child(file)
+        uri?.let { it ->
+            imageRef.putFile(it).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    imageRef.downloadUrl.addOnCompleteListener { uri ->
+                        val url = file // 이미지 URL
+                        val userUID = auth.currentUser?.uid.toString() // 작성자 UID
+                        val userID = auth.currentUser?.email.toString() // 작성자 ID(이메일)
+                        val currentTime = System.currentTimeMillis().toString() // 현재 시간 (출력할 때 형식 필요)
+                        val postingData =
+                            PostingData(context.toString(), url, userUID, userID, currentTime) // posting정보를 담은 data class에 저장
+                        postingCollectionRef.document().set(postingData)
+                    }
+                    Snackbar.make(binding.root, "업로드를 완료했습니다", Snackbar.LENGTH_SHORT).show()
+                } else if (it.isCanceled) {
+                    Snackbar.make(binding.root, "업로드를 실패했습니다", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
+
+    // 갤러리에서 이미지 선택
+    private fun choosePictures() {
+        if (activity?.let {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+            } == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = MediaStore.Images.Media.CONTENT_TYPE
+            intent.type = "image/*"
+            startActivityForResult(
+                intent,
+                PICK_IMAGE
+            )
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        }
+    }
+
+    companion object {
+        const val PICK_IMAGE = 1
+        const val UPLOAD_FOLDER = "PostingImage/"
     }
 }
