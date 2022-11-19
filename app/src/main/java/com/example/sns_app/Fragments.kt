@@ -45,8 +45,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
 class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그먼트, 검색 프레그먼트
     lateinit var searchAdapter: SearchAdapter
     private val searchViewModel by viewModels<SearchViewModel>()
-    //private val data = mutableListOf<SearchData>()
-    //private val disList = mutableListOf<SearchData>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = SearchLayoutBinding.bind(view)
         val recyclerView = binding.recyclerView

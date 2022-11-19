@@ -4,11 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sns_app.R
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class SearchViewModel : ViewModel() {
+
+    var db : FirebaseFirestore = Firebase.firestore
+    var itemsCollectionRef = db.collection("usersInformation")
+
     private val _searchData = MutableLiveData<List<SearchData>>()
     val searchData: LiveData<List<SearchData>> get() = _searchData
-
 
     private val _retrieved = MutableLiveData<List<SearchData>>()
     val retrieved: LiveData<List<SearchData>> get() = _retrieved
@@ -29,7 +35,7 @@ class SearchViewModel : ViewModel() {
     fun searchingList(p0: String?) {
         val list: MutableList<SearchData> = mutableListOf()
         searchData.value?.forEachIndexed { i, v ->
-            if (v.id == p0 || v.name == p0) {
+            if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0!!.lowercase())){
                 list.add(
                     SearchData(
                         v.id,
@@ -46,25 +52,20 @@ class SearchViewModel : ViewModel() {
         _searchData.value = data
     }
 
-
     // 임시적으로 데이터 추가해서 list 반환
     private fun createList(): List<SearchData> {
         val list: MutableList<SearchData> = mutableListOf()
-        for (i in 0..30) {
-            list.add(
-                SearchData(
-                    id = "$i",
-                    name = "사용자$i",
-                    R.drawable.profile
+
+        itemsCollectionRef.addSnapshotListener { snapshot, error ->
+            for (document in snapshot!!) {
+                list.add(
+                    SearchData(
+                        id = document["userID"].toString(),
+                        name = document["name"].toString(),
+                        R.drawable.profile
+                    )
                 )
-            )
-            list.add(
-                SearchData(
-                    id = "$i",
-                    name = "사용자$i",
-                    R.drawable.profile
-                )
-            )
+            }
         }
         return list
     }
