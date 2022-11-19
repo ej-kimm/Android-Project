@@ -10,7 +10,7 @@
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/myPageFragment"
-        android:name="com.example.sns_app.MyPageFragment"
+        android:name="com.example.sns_app.myPage.MyPageFragment"
         android:label="MyPageFragment" />
     <fragment
         android:id="@+id/postFragment"
