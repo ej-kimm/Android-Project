@@ -107,6 +107,7 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
     private val postingCollectionRef = db.collection("posting")
+    private val usersInformationRef = db.collection("usersInformation")
     private var uri: Uri? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,6 +168,12 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
     // 스토리지에 파일 업로드
     private fun uploadFile(context: Editable) {
         val storageRef = storage.reference // reference to root
+        var userProfile = ""
+        usersInformationRef.document(auth.currentUser!!.uid).get().addOnSuccessListener { // 유저 정보 받아오기
+            val filename = it["profileImage"].toString() // 파일 이름을 받아와서
+            userProfile = filename
+        }
+
         val time = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var file = "IMAGE_$time.png"
         val imageRef = storageRef.child(UPLOAD_FOLDER).child(file)
@@ -176,10 +183,10 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
                     imageRef.downloadUrl.addOnCompleteListener { uri ->
                         val url = file // 이미지 URL
                         val userUID = auth.currentUser?.uid.toString() // 작성자 UID
-                        val userID = auth.currentUser?.email.toString() // 작성자 ID(이메일)
+                        val userID = auth.currentUser?.email.toString().split("@")[0] // 작성자 ID
                         val currentTime = System.currentTimeMillis().toString() // 현재 시간 (출력할 때 형식 필요)
                         val postingData =
-                            PostingData(context.toString(), url, userUID, userID, currentTime) // posting정보를 담은 data class에 저장
+                            PostingData(context.toString(), url, userUID, userID, userProfile, currentTime) // posting정보를 담은 data class에 저장
                         postingCollectionRef.document().set(postingData)
                     }
                     Snackbar.make(binding.root, "업로드를 완료했습니다", Snackbar.LENGTH_SHORT).show()

@@ -30,6 +30,7 @@ class SignupActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
                 binding.signupBirth.text = year.toString() + "-" + (month + 1).toString() + "-" + day.toString()
             }, year, month, day)
+            datePickerDialog.datePicker.maxDate = calendar.timeInMillis;
             datePickerDialog.show()
         }
 
