@@ -6,7 +6,7 @@ data class PostingData(
     var imageURL: String, // 사진 url
     var UID: String, // 고유 UID
     var userID: String, // 글을 작성한 유저의 아이디
-    var userProfile: String,
+    var profileURL: String,
     var time: String, // 글을 올린 시간
     var heartCount: Int = 0, // 해당 글의 하트 수(좋아요)
     var heartClickPeople: Map<String, Boolean> = HashMap()) { // 하트 누른 사람 관리

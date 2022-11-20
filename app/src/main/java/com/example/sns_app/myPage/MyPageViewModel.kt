@@ -36,7 +36,7 @@ class MyPageViewModel : ViewModel() {
                             time = document["time"].toString(),
                             userID = document["userID"].toString(),
                             UID = document["uid"].toString(),
-                            userProfile = document["userProfile"].toString(),
+                            profileURL = document["profileURL"].toString(),
                             heartClickPeople = hashMapOf(),
                             heartCount = 0
                         )
