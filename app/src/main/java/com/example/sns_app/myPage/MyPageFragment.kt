@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Follow.FollowListActivity
-import com.example.sns_app.Home.MyAdapter
 import com.example.sns_app.R
-import com.example.sns_app.TestViewModel
 import com.example.sns_app.databinding.MypageFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
@@ -34,6 +32,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     private val usersInformationRef = db.collection("usersInformation")
     private val currentUid = Firebase.auth.currentUser!!.uid
     private var filename = ""
+    lateinit var mypageAdapter: MyPageAdapter
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> // 이미지 선택 후
         if (uri != null) { // 선택된 이미지가 존재한다면
@@ -73,9 +72,14 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             startActivity(intent)
         }
 
-        val viewModel : TestViewModel by viewModels()
+        val viewModel : MyPageViewModel by viewModels()
 
-        binding.mypageRecyclerview.adapter = MyAdapter(viewModel)
+        viewModel.posts.observe(viewLifecycleOwner) {
+            mypageAdapter.setDataList(it)
+        }
+
+        mypageAdapter = MyPageAdapter(viewModel)
+        binding.mypageRecyclerview.adapter = mypageAdapter
         binding.mypageRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.mypageRecyclerview.setHasFixedSize(true) // same height
     }

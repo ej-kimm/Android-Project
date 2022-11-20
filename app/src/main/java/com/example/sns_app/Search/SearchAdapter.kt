@@ -37,7 +37,7 @@ class SearchAdapter(private val context: Fragment) :
             txtId.text = item.id
             txtName.text = item.name
 //            Glide.with(itemView).load(item.img).into(imgProfile)
-            item.img?.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
+            item.img.getBytes(Long.MAX_VALUE).addOnSuccessListener {
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
 //                imgProfile.setImageBitmap(bmp)
                 Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform()).into(imgProfile)
