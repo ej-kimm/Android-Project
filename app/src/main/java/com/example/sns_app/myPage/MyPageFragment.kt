@@ -2,6 +2,7 @@ package com.example.sns_app.myPage
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,10 +25,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 프레그먼트
-    lateinit var storage: FirebaseStorage
-    lateinit var binding: MypageFragmentBinding
+    private lateinit var storage: FirebaseStorage
+    private lateinit var binding: MypageFragmentBinding
     private val db: FirebaseFirestore = Firebase.firestore
     private val usersInformationRef = db.collection("usersInformation")
     private val currentUid = Firebase.auth.currentUser!!.uid
@@ -36,14 +39,14 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> // 이미지 선택 후
         if (uri != null) { // 선택된 이미지가 존재한다면
-            filename = currentUid // 자신의 uid를 파일 이름으로
-            val imageRef = storage.reference.child("ProfileImage/${filename}") // 파일 이름으로 스토리지 참조 획득
-            imageRef.putFile(uri).addOnCompleteListener { // 선택된 이미지를 획득한 참조에 저장
-                if (it.isSuccessful) {
-                    // upload success
-                    Snackbar.make(binding.root, "변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
-                    usersInformationRef.document(currentUid).update("profileImage", filename).addOnSuccessListener {
-                        updateProfileImage() // 변경 성공 시 변경된 이미지로 UI update
+            usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
+                val prefilename = it["profileImage"].toString() // 기존 파일 이름을 받아와서
+                if(it["profileImage"].toString() == "default") { // default는 기존 파일 삭제 없이 업로드
+                    uploadProfile(uri)
+                } else { // 기존에 프로필을 변경했따면
+                    val profileImgRef = storage.getReference("ProfileImage/${prefilename}") // 유저 정보의 기존 파일 정보 참조 획득
+                    profileImgRef.delete().addOnSuccessListener { // 기존 파일 삭제 후
+                        uploadProfile(uri)
                     }
                 }
             }
@@ -86,14 +89,17 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 
     private fun updateProfileImage() {
         storage = Firebase.storage
-        usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
-            binding.myId.text = it["name"].toString() // 이름은 myId에
-            filename = it["profileImage"].toString() // 파일 이름을 받아와서
-            if(it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
-                binding.mypageMyImg.setImageResource(R.drawable.profile) // default 프로필 이미지로 변경
-            } else {
-                val profileImgRef = storage.getReference("ProfileImage/${filename}") // 유저 정보의 파일 정보 참조 획득
-                displayImageRef(profileImgRef, binding.mypageMyImg)
+        usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
+            usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
+                binding.myId.text = it["name"].toString() // 이름은 myId에
+                filename = it["profileImage"].toString() // 파일 이름을 받아와서
+                if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
+                    binding.mypageMyImg.setImageResource(R.drawable.profile) // default 프로필 이미지로 변경
+                } else {
+                    val profileImgRef =
+                        storage.getReference("ProfileImage/${filename}") // 유저 정보의 파일 정보 참조 획득
+                    displayImageRef(profileImgRef, binding.mypageMyImg)
+                }
             }
         }
     }
@@ -105,6 +111,19 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             Glide.with(view).load(bmp).apply(RequestOptions.circleCropTransform()).into(view) // Glide 라이브러리 활용, Circle shape
         }?.addOnFailureListener {
             // Failed to download the image
+        }
+    }
+
+    private fun uploadProfile(uri: Uri) {
+        val time = SimpleDateFormat("yyyyMMdd_HHmmss",Locale.KOREA).format(Date()) // uid 정보에서 고유 정보인 시간으로 변경 ( for snapshot )
+        val filename = "PROFILE_$time.png"
+        val imageRef = storage.reference.child("ProfileImage/${filename}") // 파일 이름으로 스토리지 참조 획득
+        imageRef.putFile(uri).addOnCompleteListener { // 선택된 이미지를 획득한 참조에 저장
+            if (it.isSuccessful) {
+                // upload success
+                Snackbar.make(binding.root, "변경이 완료되었습니다.", Snackbar.LENGTH_SHORT).show()
+                usersInformationRef.document(currentUid).update("profileImage", filename)
+            }
         }
     }
 }
