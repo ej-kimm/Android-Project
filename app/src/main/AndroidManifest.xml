@@ -42,6 +42,7 @@
                 android:value="" />
         </activity>
         <activity android:name=".Follow.FollowListActivity"></activity>
+        <activity android:name=".Search.UserPageActivity"></activity>
     </application>
 
 </manifest>

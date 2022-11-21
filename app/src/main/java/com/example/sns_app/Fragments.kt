@@ -19,10 +19,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sns_app.Home.MyAdapter
 import com.example.sns_app.Posting.PostingData
-import com.example.sns_app.Search.HorizontalItemDecorator
-import com.example.sns_app.Search.SearchAdapter
-import com.example.sns_app.Search.SearchViewModel
-import com.example.sns_app.Search.VerticalItemDecorator
+import com.example.sns_app.Search.*
+import com.example.sns_app.databinding.ActivityUserpageBinding
 import com.example.sns_app.databinding.HomeFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
 import com.example.sns_app.databinding.UserpostingFramentBinding
@@ -97,8 +95,25 @@ class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그
         recyclerView.adapter = searchAdapter
         recyclerView.addItemDecoration(VerticalItemDecorator(10))
         recyclerView.addItemDecoration(HorizontalItemDecorator(10))
+
+        //아이템 클릭 이벤트
+        val intent = Intent(context,UserPageActivity::class.java)
+        searchAdapter.setOnItemClickListner(object : SearchAdapter.OnItemClickListner{
+            override fun OnItemClick(view: View, position: Int) {
+                //해달 클릭 아이템의 name을 가지고 intent
+                val id = searchViewModel.searchData.value?.get(position)?.id
+
+                intent.putExtra("data",id)
+                startActivity(intent)
+            }
+        })
+
+
+
     }
 }
+
+
 
 // 게시글 추가 프레그먼트
 class PostFragment : Fragment(R.layout.userposting_frament) {
