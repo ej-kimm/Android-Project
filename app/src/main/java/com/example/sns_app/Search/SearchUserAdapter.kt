@@ -2,77 +2,81 @@ package com.example.sns_app.Search
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.R
-import org.w3c.dom.Text
+import com.example.sns_app.databinding.PostLayoutBinding
+import com.example.sns_app.myPage.MyPageViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
-class SearchUserAdapter(private val items : ArrayList<SearchUserData>):RecyclerView.Adapter<SearchUserAdapter.ViewHolder>() {
+// 리사이클러뷰 어댑터
+class SearchUserAdapter(private val viewModel: UserPageViewModel) : RecyclerView.Adapter<SearchUserAdapter.ViewHolder>() {
+    private var items: List<SearchUserData> = emptyList()
+    private val storage = Firebase.storage
+    private val db = Firebase.firestore
+    private val usersInformationRef = db.collection("usersInformation")
+    private val currentUid = Firebase.auth.currentUser!!.uid
 
 
-    override fun getItemCount(): Int = items.size
+    inner class ViewHolder(private val binding: PostLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: SearchUserData) {
+            val postImgRef = storage.getReference("PostingImage/${item.imageURL}")
 
-    override fun onBindViewHolder(holder : SearchUserAdapter.ViewHolder,position:Int){
-
-    }
-
-    override fun onCreateViewHolder(parent:ViewGroup,viewType:Int): ViewHolder {
-        val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.recycler_searchuser,parent,false)
-        return ViewHolder(inflatedView)
-    }
-
-    inner class ViewHolder(v : View) : RecyclerView.ViewHolder(v) {
-        private var view: View = v
-        fun bind(items: SearchUserData) {
-            val searchUserImg: ImageView = itemView.findViewById(R.id.searchUser_img)
-            val searchUserId: TextView = itemView.findViewById(R.id.searchUser_id)
-            val searchUserPostImg: ImageView = itemView.findViewById(R.id.searchUserPost_img)
-            val searchUserId2: TextView = itemView.findViewById(R.id.searchUser_id2)
-            val searchUserContent: TextView = itemView.findViewById(R.id.searchUserPost_content)
-            val myImg: ImageView = itemView.findViewById(R.id.my_img)
-            /*
-            //검색한 유저 프로필 사진
-            items.searchUserimg.getBytes(Long.MAX_VALUE).addOnSuccessListener {
+            binding.publisherId.text = item.userID
+            binding.publisherId2.text = item.userID
+            binding.postContent.text = item.context
+            postImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform())
-                    .into(searchUserImg)
-            }*/
-            Glide.with(itemView).load(items.searchUser_img).into(searchUserImg)
+                Glide.with(binding.root).load(bmp).into(binding.postImg)
+            }
 
-            //검색 유저 아이디
-            searchUserId.text = items.searchUserId
-
-            /*
-            //검색 유저 게시글
-            items.searchUserPostImg.getBytes(Long.MAX_VALUE).addOnSuccessListener {
-                val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform())
-                    .into(searchUserPostImg)
-            }*/
-            Glide.with(itemView).load(items.searchUserPost_img).into(searchUserPostImg)
-
-            //검색 유저 아이디
-            searchUserId2.text = items.searchUserId2
-            //검색 유저 게시글 코멘트
-            searchUserContent.text = items.searchUserComment
-
-            /*
-            //나의 이미지
-            items.myImg.getBytes(Long.MAX_VALUE).addOnSuccessListener {
-                val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform())
-                    .into(myImg)
-            }*/
-            Glide.with(itemView).load(items.my_img).into(myImg)
+            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
+                usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
+                    val filename = it["profileImage"].toString() // 파일 이름을 받아와서
+                    if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
+                        Glide.with(binding.root).load(R.drawable.profile)
+                            .into(binding.myImg)// default 프로필 이미지로 변경
+                    } else {
+                        val profileImgRef = storage.getReference("ProfileImage/${filename}") // 유저 정보의 파일 정보 참조 획득
+                        displayImageRef(profileImgRef, binding.myImg)
+                    }
+                }
+            }
         }
-
-
-
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = PostLayoutBinding.inflate(layoutInflater, parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items[position])
+    }
+
+    override fun getItemCount() = items.size
+
+    fun setDataList(list: List<SearchUserData>) {
+        items = list
+        notifyDataSetChanged()
+    }
+
+    private fun displayImageRef(imageRef: StorageReference?, view: ImageView) { // 이미지를 화면에 띄움
+        imageRef?.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
+            val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+//            view.setImageBitmap(bmp)
+            Glide.with(view).load(bmp).apply(RequestOptions.circleCropTransform()).into(view) // Glide 라이브러리 활용, Circle shape
+        }?.addOnFailureListener {
+            // Failed to download the image
+        }
+    }
 }

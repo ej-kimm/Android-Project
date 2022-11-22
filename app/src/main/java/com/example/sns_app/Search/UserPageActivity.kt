@@ -4,12 +4,18 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.R
+import com.example.sns_app.databinding.ActivityUserpageBinding
+import com.example.sns_app.databinding.RecyclerSearchBinding
+import com.example.sns_app.myPage.MyPageAdapter
+import com.example.sns_app.myPage.MyPageViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -25,16 +31,19 @@ class UserPageActivity : AppCompatActivity(){
     private val storage = Firebase.storage
     private val currentUid = Firebase.auth.currentUser!!.uid
     lateinit var searchUserAdapter: SearchUserAdapter
+    lateinit var binding: ActivityUserpageBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_userpage)
+        binding = ActivityUserpageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         var profileImgRef : StorageReference
         var recy = findViewById<RecyclerView>(R.id.recycler_searchUser)
 
         //검색한 유저 아이디 받아오기
         val searchId = intent.getStringExtra("data")
+
 
 
         val my_id = findViewById<TextView>(R.id.my_id)
@@ -73,27 +82,36 @@ class UserPageActivity : AppCompatActivity(){
         var searchUser = db.collection("userInformation").whereEqualTo("userID",searchId).get()
 
 
-        val list = ArrayList<SearchUserData>()
-        //recyclerView에 넣을 검색 유저 아이디1, 검색 유저 아이디 2, 검색 유저 프로필 사진, 포스팅사진, 포스팅컨텍스트, 자신 프로필 사진
-        db.collection("posting")
-            .whereEqualTo("userID",searchId)
-            .get()
-            .addOnSuccessListener { document ->
-                for(doc in document){
-                        list.add(
-                            SearchUserData(
-                                searchUserId = doc["userId"].toString(),
-                                searchUserId2 = doc["userId"].toString(),
-                                searchUserComment = doc["context"].toString(),
-                                my_img ="C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png",
-                                searchUser_img = "C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png",
-                                searchUserPost_img = "C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png"))
+//        val list = ArrayList<SearchUserData>()
+//        //recyclerView에 넣을 검색 유저 아이디1, 검색 유저 아이디 2, 검색 유저 프로필 사진, 포스팅사진, 포스팅컨텍스트, 자신 프로필 사진
+//        db.collection("posting")
+//            .whereEqualTo("userID",searchId)
+//            .get()
+//            .addOnSuccessListener { document ->
+//                for(doc in document){
+//                        list.add(
+//                            SearchUserData(
+//                                searchUserId = doc["userId"].toString(),
+//                                searchUserId2 = doc["userId"].toString(),
+//                                searchUserComment = doc["context"].toString(),
+//                                my_img ="C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png",
+//                                searchUser_img = "C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png",
+//                                searchUserPost_img = "C:\\Users\\kwon\\Desktop\\end\\Android-Project\\app\\src\\main\\res\\drawable\\profile.png"))
+//
+//                    }
+//            }
 
-                    }
-            }
+        val viewModel : UserPageViewModel  by viewModels()
 
-            searchUserAdapter = SearchUserAdapter(list)
-            recy.adapter = searchUserAdapter
+        viewModel.posts.observe(this) {
+            searchUserAdapter.setDataList(it)
+        }
+
+        searchUserAdapter = SearchUserAdapter(viewModel)
+        binding.recyclerSearchUser.adapter = searchUserAdapter
+        binding.recyclerSearchUser.layoutManager = LinearLayoutManager(this)
+        binding.recyclerSearchUser.setHasFixedSize(true) // same height
+
 
 
 
