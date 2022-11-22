@@ -1,8 +1,5 @@
 package com.example.sns_app.Search
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.R
-import com.example.sns_app.databinding.ActivityMainBinding
-import kotlinx.coroutines.NonDisposableHandle.parent
-import kotlin.coroutines.coroutineContext
-    private lateinit var itemClickListner : SearchAdapter.OnItemClickListner
+
+private lateinit var itemClickListner : SearchAdapter.OnItemClickListner
 
 class SearchAdapter(private val context: Fragment) :
     RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
@@ -44,22 +38,24 @@ class SearchAdapter(private val context: Fragment) :
         fun bind(item: SearchData) {
             txtId.text = item.id
             txtName.text = item.name
-//            Glide.with(itemView).load(item.img).into(imgProfile)
-            item.img.getBytes(Long.MAX_VALUE).addOnSuccessListener {
-                val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
+            if(item.img.toString().contains("default")) {
+                Glide.with(itemView).load(R.drawable.profile)
+                    .apply(RequestOptions.circleCropTransform()).into(imgProfile)
+            } else {
+                item.img.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
+                    val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
 //                imgProfile.setImageBitmap(bmp)
-                Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform()).into(imgProfile)
+                    Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform()).into(imgProfile)
+                } // 참조 활용, 이미지뷰에 이미지 설정
+            }
 
                 //아이템 클릭 리스너
-                itemView.setOnClickListener {
-                    val pos = adapterPosition
-                    if(pos != RecyclerView.NO_POSITION && itemClickListner!=null){
-                        itemClickListner.OnItemClick(itemView,pos)
-                    }
+            itemView.setOnClickListener {
+                val pos = adapterPosition
+                if(pos != RecyclerView.NO_POSITION){
+                    itemClickListner.OnItemClick(itemView,pos)
                 }
-
-            } // 참조 활용, 이미지뷰에 이미지 설정
-
+            }
         }
     }
 

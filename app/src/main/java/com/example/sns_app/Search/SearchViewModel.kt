@@ -36,7 +36,7 @@ class SearchViewModel : ViewModel() {
     fun searchingList(p0: String?) {
         val list: MutableList<SearchData> = mutableListOf()
         searchData.value?.forEachIndexed { i, v ->
-            if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0!!.lowercase())){
+            if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0.lowercase())){
                 list.add(
                     SearchData(
                         v.id,
@@ -57,8 +57,8 @@ class SearchViewModel : ViewModel() {
     private fun createList(): List<SearchData> {
         val list: MutableList<SearchData> = mutableListOf()
 
-        itemsCollectionRef.addSnapshotListener { snapshot, error ->
-            for (document in snapshot!!) {
+        itemsCollectionRef.get().addOnSuccessListener {
+            for (document in it!!) {
                 val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
                 list.add(
                     SearchData(
