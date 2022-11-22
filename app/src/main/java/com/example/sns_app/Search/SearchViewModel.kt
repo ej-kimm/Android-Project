@@ -39,6 +39,7 @@ class SearchViewModel : ViewModel() {
             if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0.lowercase())){
                 list.add(
                     SearchData(
+                        v.uid,
                         v.id,
                         v.name,
                         v.img
@@ -62,6 +63,7 @@ class SearchViewModel : ViewModel() {
                 val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
                 list.add(
                     SearchData(
+                        uid = document.id,
                         id = document["userID"].toString(),
                         name = document["name"].toString(),
                         img = profileImgRef // 참조를 전달

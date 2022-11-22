@@ -3,13 +3,11 @@ package com.example.sns_app.Search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.sns_app.Posting.PostingData
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
-class UserPageViewModel : ViewModel() {
+class UserPageViewModel() : ViewModel() {
     private val _posts = MutableLiveData<List<SearchUserData>>()
     val posts: LiveData<List<SearchUserData>> get() = _posts
 
@@ -17,19 +15,19 @@ class UserPageViewModel : ViewModel() {
     private val itemsCollectionRef = db.collection("posting")
 
     init {
-        createList()
+//        createList()
     }
 
     private fun setData(data: List<SearchUserData>) {
         _posts.value = data
     }
 
-    private fun createList() {
+    fun createList(uid: String) {
         val list: MutableList<SearchUserData> = mutableListOf()
 
         itemsCollectionRef.addSnapshotListener { snapshot, _ ->
             for (document in snapshot!!) {
-                if (document["uid"].toString() == Firebase.auth.currentUser!!.uid){
+                if (document["uid"].toString() == uid){ // 인자로 전달받은 uid 정보 띄우기
                     list.add(0,
                         SearchUserData(
                             context = document["context"].toString(),

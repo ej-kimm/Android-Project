@@ -17,10 +17,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sns_app.Home.MyAdapter
+import com.example.sns_app.Home.FollowDto
+import com.example.sns_app.Home.HomeAdapter
 import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.Search.*
-import com.example.sns_app.databinding.ActivityUserpageBinding
 import com.example.sns_app.databinding.HomeFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
 import com.example.sns_app.databinding.UserpostingFramentBinding
@@ -38,17 +38,39 @@ import java.util.*
 // 게시글 기능 구현 이후 분리
 
 class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
+    lateinit var homeAdapter: HomeAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
         val binding = HomeFragmentBinding.bind(view)
+        val db = Firebase.firestore
+        val viewModel : HomeViewModel by viewModels()
+        // 팔로우 컬렉션에서 현재 접속한 uid document 참조 획득
+        val userInformationRef = db.collection("follow").document(Firebase.auth.currentUser!!.uid)
+        // 게시글 컬렉션 참조 획득
+        val itemsCollectionRef = db.collection("posting")
+        
+        // 획득한 참조로
+        userInformationRef.get().addOnSuccessListener { it1 ->
+            val followDto = it1.toObject(FollowDto::class.java) // 획득한 snapshot을 받아와 데이터 클래스로 형 변환
+            followDto?.followings?.keys?.forEach { followingUID -> // 팔로잉 목록의 키 ( uid ) 를 루프로 돌며
+                itemsCollectionRef.get().addOnSuccessListener { // 게시글 컬렉션 참조를 받아와
+                    for (doc in it) { // 게시글마다
+                        if(doc["uid"] == followingUID) { // 키와 같은 게시글이 있는지 검색
+                            viewModel.createList(doc["uid"].toString()) // 있다면 createList
+                        }
+                    }
+                }
+            }
+        }
 
-        // 하단의 코드는 UI 구성 확인을 위한 테스트 코드임
-        val viewModel : TestViewModel by viewModels()
-
-        binding.homeRecyclerview.adapter = MyAdapter(viewModel)
+        viewModel.posts.observe(viewLifecycleOwner) { // Livedata Observe
+            homeAdapter.setDataList(it) // Adapter에 데이터리스트 전달
+        }
+        homeAdapter = HomeAdapter(viewModel)
+        binding.homeRecyclerview.adapter = homeAdapter
         binding.homeRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.homeRecyclerview.setHasFixedSize(true) // same height
-
     }
 }
 
@@ -101,9 +123,9 @@ class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그
         searchAdapter.setOnItemClickListner(object : SearchAdapter.OnItemClickListner{
             override fun OnItemClick(view: View, position: Int) {
                 //해달 클릭 아이템의 name을 가지고 intent
-                val id = searchViewModel.searchData.value?.get(position)?.id
+                val uid = searchViewModel.searchData.value?.get(position)?.uid
 
-                intent.putExtra("data",id)
+                intent.putExtra("data",uid)
                 startActivity(intent)
             }
         })
@@ -189,8 +211,8 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
             profileURL = filename
         }
 
-        val time = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        var file = "IMAGE_$time.png"
+        val time = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA).format(Date())
+        val file = "IMAGE_$time.png"
         val imageRef = storageRef.child(UPLOAD_FOLDER).child(file)
         uri?.let { it ->
             imageRef.putFile(it).addOnCompleteListener {
