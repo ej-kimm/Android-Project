@@ -68,11 +68,14 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+
         //임시적으로 "팔로잉" textView를 클릭하면 followList로 이동
+
         binding.following.setOnClickListener{
             val intent = Intent(context, FollowListActivity::class.java)
             startActivity(intent)
         }
+
 
         binding.logout.setOnClickListener {
             Firebase.auth.signOut()

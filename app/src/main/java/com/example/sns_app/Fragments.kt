@@ -53,16 +53,16 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
         // 획득한 참조로
         userInformationRef.get().addOnSuccessListener { it1 ->
             val followDto = it1.toObject(FollowDto::class.java) // 획득한 snapshot을 받아와 데이터 클래스로 형 변환
-            followDto?.followings?.keys?.forEach { followingUID -> // 팔로잉 목록의 키 ( uid ) 를 루프로 돌며
-                itemsCollectionRef.get().addOnSuccessListener { // 게시글 컬렉션 참조를 받아와
-                    for (doc in it) { // 게시글마다
-                        if(doc["uid"] == followingUID) { // 키와 같은 게시글이 있는지 검색
-                            viewModel.createList(doc["uid"].toString()) // 있다면 createList
-                        }
+        followDto?.followings?.keys?.forEach { followingUID -> // 팔로잉 목록의 키 ( uid ) 를 루프로 돌며
+            itemsCollectionRef.get().addOnSuccessListener { // 게시글 컬렉션 참조를 받아와
+                for (doc in it) { // 게시글마다
+                    if(doc["uid"] == followingUID) { // 키와 같은 게시글이 있는지 검색
+                        viewModel.createList(doc["uid"].toString()) // 있다면 createList
                     }
                 }
             }
         }
+    }
 
         viewModel.posts.observe(viewLifecycleOwner) { // Livedata Observe
             homeAdapter.setDataList(it) // Adapter에 데이터리스트 전달

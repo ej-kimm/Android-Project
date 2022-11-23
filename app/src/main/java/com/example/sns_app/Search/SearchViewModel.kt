@@ -3,6 +3,7 @@ package com.example.sns_app.Search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -13,6 +14,9 @@ class SearchViewModel : ViewModel() {
     var db : FirebaseFirestore = Firebase.firestore
     var itemsCollectionRef = db.collection("usersInformation")
     private val storage = Firebase.storage
+
+    private val currentUid = Firebase.auth.currentUser!!.uid
+    //val doc = itemsCollectionRef.document(currentUid)
 
     private val _searchData = MutableLiveData<List<SearchData>>()
     val searchData: LiveData<List<SearchData>> get() = _searchData
@@ -36,15 +40,17 @@ class SearchViewModel : ViewModel() {
     fun searchingList(p0: String?) {
         val list: MutableList<SearchData> = mutableListOf()
         searchData.value?.forEachIndexed { i, v ->
+
             if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0.lowercase())){
-                list.add(
-                    SearchData(
-                        v.uid,
-                        v.id,
-                        v.name,
-                        v.img
+                    list.add(
+                        SearchData(
+                            v.uid,
+                            v.id,
+                            v.name,
+                            v.img
+                        )
                     )
-                )
+
             }
         }
         _retrieved.value = list
@@ -57,18 +63,19 @@ class SearchViewModel : ViewModel() {
     // 임시적으로 데이터 추가해서 list 반환
     private fun createList(): List<SearchData> {
         val list: MutableList<SearchData> = mutableListOf()
-
         itemsCollectionRef.get().addOnSuccessListener {
             for (document in it!!) {
                 val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
-                list.add(
-                    SearchData(
-                        uid = document.id,
-                        id = document["userID"].toString(),
-                        name = document["name"].toString(),
-                        img = profileImgRef // 참조를 전달
+                if(document.id != currentUid) {
+                    list.add(
+                        SearchData(
+                            uid = document.id,
+                            id = document["userID"].toString(),
+                            name = document["name"].toString(),
+                            img = profileImgRef // 참조를 전달
+                        )
                     )
-                )
+                }
             }
         }
         return list
