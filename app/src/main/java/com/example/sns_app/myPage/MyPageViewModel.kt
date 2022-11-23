@@ -24,9 +24,8 @@ class MyPageViewModel : ViewModel() {
     }
 
     private fun createList() {
-        val list: MutableList<PostingData> = mutableListOf()
-
         itemsCollectionRef.addSnapshotListener { snapshot, _ ->
+            val list: MutableList<PostingData> = mutableListOf()
             for (document in snapshot!!) {
                 if (document["uid"].toString() == Firebase.auth.currentUser!!.uid){
                     list.add(0,

@@ -26,7 +26,7 @@ class SearchViewModel : ViewModel() {
 
     //시작하면 데이터 받아오기
     init {
-        setData(createList())
+        createList()
     }
     /*
     fun setRetriedList(list: List<SearchData>) {
@@ -61,10 +61,10 @@ class SearchViewModel : ViewModel() {
     }
 
     // 임시적으로 데이터 추가해서 list 반환
-    private fun createList(): List<SearchData> {
-        val list: MutableList<SearchData> = mutableListOf()
-        itemsCollectionRef.get().addOnSuccessListener {
-            for (document in it!!) {
+    private fun createList() {
+        itemsCollectionRef.addSnapshotListener { snapshot, _ ->
+            val list: MutableList<SearchData> = mutableListOf()
+            for (document in snapshot!!) {
                 val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
                 if(document.id != currentUid) {
                     list.add(
@@ -77,7 +77,7 @@ class SearchViewModel : ViewModel() {
                     )
                 }
             }
+            _searchData.value = list
         }
-        return list
     }
 }

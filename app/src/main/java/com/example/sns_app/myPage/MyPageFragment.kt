@@ -26,6 +26,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 프레그먼트
     private lateinit var storage: FirebaseStorage
@@ -68,14 +70,11 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-
         //임시적으로 "팔로잉" textView를 클릭하면 followList로 이동
-
         binding.following.setOnClickListener{
             val intent = Intent(context, FollowListActivity::class.java)
             startActivity(intent)
         }
-
 
         binding.logout.setOnClickListener {
             Firebase.auth.signOut()
@@ -124,9 +123,9 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     }
 
     private fun uploadProfile(uri: Uri) {
-//        val time = SimpleDateFormat("yyyyMMdd_HHmmss",Locale.KOREA).format(Date()) // uid 정보에서 고유 정보인 시간으로 변경 ( for snapshot )
-//        val filename = "PROFILE_$time.png"
-        val filename = currentUid
+        val time = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA).format(Date()) // uid 정보에서 고유 정보인 시간으로 변경 ( for snapshot )
+        val filename = "PROFILE_$time.png"
+//        val filename = currentUid
         val imageRef = storage.reference.child("ProfileImage/${filename}") // 파일 이름으로 스토리지 참조 획득
         imageRef.putFile(uri).addOnCompleteListener { // 선택된 이미지를 획득한 참조에 저장
             if (it.isSuccessful) {

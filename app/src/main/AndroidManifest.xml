@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -41,8 +42,8 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".Follow.FollowListActivity"></activity>
-        <activity android:name=".Search.UserPageActivity"></activity>
+        <activity android:name=".Follow.FollowListActivity" />
+        <activity android:name=".Search.UserPageActivity" />
     </application>
 
 </manifest>

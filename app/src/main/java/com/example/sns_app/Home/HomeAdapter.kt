@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.R
@@ -26,6 +27,7 @@ class HomeAdapter(private val viewModel: HomeViewModel) : RecyclerView.Adapter<H
     private val currentUid = Firebase.auth.currentUser!!.uid
 
     inner class ViewHolder(private val binding: PostLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val requestManager: RequestManager = Glide.with(binding.root)
         fun bind(item: PostingData) {
             val postImgRef = storage.getReference("PostingImage/${item.imageURL}")
             binding.publisherId.text = item.userID
@@ -33,18 +35,32 @@ class HomeAdapter(private val viewModel: HomeViewModel) : RecyclerView.Adapter<H
             binding.postContent.text = item.context
             postImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                Glide.with(binding.root).load(bmp).into(binding.postImg)
+                requestManager.load(bmp).into(binding.postImg)
+            }
+
+            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
+                usersInformationRef.document(item.UID).get().addOnSuccessListener {
+                    val filename = it["profileImage"].toString() // 파일 이름을 받아와서
+                    if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
+                        requestManager.load(R.drawable.profile)
+                            .into(binding.publisherImg)// default 프로필 이미지로 변경
+                    } else {
+                        val profileImgRef =
+                            storage.getReference("ProfileImage/${filename}") // 유저 정보의 파일 정보 참조 획득
+                        displayImageRef(profileImgRef, binding, binding.publisherImg)
+                    }
+                }
             }
 
             usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
                 usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
                     val filename = it["profileImage"].toString() // 파일 이름을 받아와서
                     if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
-                        Glide.with(binding.root).load(R.drawable.profile)
+                        requestManager.load(R.drawable.profile)
                             .into(binding.myImg)// default 프로필 이미지로 변경
                     } else {
                         val profileImgRef = storage.getReference("ProfileImage/${filename}") // 유저 정보의 파일 정보 참조 획득
-                        displayImageRef(profileImgRef, binding.myImg)
+                        displayImageRef(profileImgRef, binding, binding.myImg)
                     }
                 }
             }
@@ -68,11 +84,12 @@ class HomeAdapter(private val viewModel: HomeViewModel) : RecyclerView.Adapter<H
         notifyDataSetChanged()
     }
 
-    private fun displayImageRef(imageRef: StorageReference?, view: ImageView) { // 이미지를 화면에 띄움
+    private fun displayImageRef(imageRef: StorageReference?, binding: PostLayoutBinding, view: ImageView) { // 이미지를 화면에 띄움
+        val requestManager : RequestManager = Glide.with(binding.root)
         imageRef?.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
 //            view.setImageBitmap(bmp)
-            Glide.with(view).load(bmp).apply(RequestOptions.circleCropTransform()).into(view) // Glide 라이브러리 활용, Circle shape
+            requestManager.load(bmp).apply(RequestOptions.circleCropTransform()).into(view) // Glide 라이브러리 활용, Circle shape
         }?.addOnFailureListener {
             // Failed to download the image
         }
