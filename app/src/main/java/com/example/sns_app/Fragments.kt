@@ -49,18 +49,18 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
         val followInfoRef = db.collection("follow").document(Firebase.auth.currentUser!!.uid)
 
         // 획득한 참조로
-        followInfoRef.addSnapshotListener { snapshot, _ ->
+        followInfoRef.addSnapshotListener { snapshot, _ -> // 팔로우 데이터 실시간 감시
             val followDto =
                 snapshot?.toObject(FollowDto::class.java) // 획득한 snapshot을 받아와 데이터 클래스로 형 변환
-            if(followDto != null) {
-                viewModel.getFollowInfo(followDto)
+            if(followDto != null) { // 팔로우 데이터가 존재한다면
+                viewModel.getFollowInfo(followDto) // 뷰모델에 followDto 전달
             }
         }
-
 
         viewModel.posts.observe(viewLifecycleOwner) { // Livedata Observe
             homeAdapter.setDataList(it) // Adapter에 데이터리스트 전달
         }
+
         homeAdapter = HomeAdapter(viewModel)
         binding.homeRecyclerview.adapter = homeAdapter
         binding.homeRecyclerview.layoutManager = LinearLayoutManager(activity)

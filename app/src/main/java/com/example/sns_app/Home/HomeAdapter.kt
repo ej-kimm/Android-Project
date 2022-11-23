@@ -27,7 +27,7 @@ class HomeAdapter(private val viewModel: HomeViewModel) : RecyclerView.Adapter<H
     private val currentUid = Firebase.auth.currentUser!!.uid
 
     inner class ViewHolder(private val binding: PostLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val requestManager: RequestManager = Glide.with(binding.root)
+        private val requestManager: RequestManager = Glide.with(binding.root) // Glide 에러 해결책
         fun bind(item: PostingData) {
             val postImgRef = storage.getReference("PostingImage/${item.imageURL}")
             binding.publisherId.text = item.userID
