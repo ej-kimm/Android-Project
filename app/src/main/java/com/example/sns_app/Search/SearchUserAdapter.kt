@@ -35,7 +35,6 @@ class SearchUserAdapter(private val viewModel: UserPageViewModel) : RecyclerView
                 Glide.with(binding.root).load(bmp).into(binding.postImg)
             }
 
-            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
                 usersInformationRef.document(item.UID).get().addOnSuccessListener {
                     val filename = it["profileImage"].toString() // 파일 이름을 받아와서
                     if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
@@ -53,9 +52,7 @@ class SearchUserAdapter(private val viewModel: UserPageViewModel) : RecyclerView
                         }
                     }
                 }
-            }
 
-            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
                 usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
                     val filename = it["profileImage"].toString() // 파일 이름을 받아와서
                     if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
@@ -72,7 +69,6 @@ class SearchUserAdapter(private val viewModel: UserPageViewModel) : RecyclerView
                         }
                     }
                 }
-            }
         }
     }
 

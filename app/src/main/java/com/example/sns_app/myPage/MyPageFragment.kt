@@ -97,8 +97,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 
     private fun updateProfileImage() {
         storage = Firebase.storage
-        usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
-            usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
+        usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
                 binding.myId.text = it["name"].toString() // 이름은 myId에
                 filename = it["profileImage"].toString() // 파일 이름을 받아와서
                 if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
@@ -109,7 +108,6 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
                     displayImageRef(profileImgRef, binding.mypageMyImg)
                 }
             }
-        }
     }
 
     private fun displayImageRef(imageRef: StorageReference?, view: ImageView) { // 이미지를 화면에 띄움

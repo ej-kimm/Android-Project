@@ -23,9 +23,9 @@ class UserPageViewModel() : ViewModel() {
     }
 
     fun createList(uid: String) {
-        itemsCollectionRef.addSnapshotListener { snapshot, _ ->
+        itemsCollectionRef.get().addOnSuccessListener {
             val list: MutableList<SearchUserData> = mutableListOf()
-            for (document in snapshot!!) {
+            for (document in it!!) {
                 if (document["uid"].toString() == uid){ // 인자로 전달받은 uid 정보 띄우기
                     list.add(0,
                         SearchUserData(

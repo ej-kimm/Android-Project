@@ -37,7 +37,6 @@ class MyPageAdapter(private val viewModel: MyPageViewModel) : RecyclerView.Adapt
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
                 requestManager.load(bmp).into(binding.postImg)
             }
-            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
                 usersInformationRef.document(item.UID).get().addOnSuccessListener {
                     val filename = it["profileImage"].toString() // 파일 이름을 받아와서
                     if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
@@ -49,9 +48,7 @@ class MyPageAdapter(private val viewModel: MyPageViewModel) : RecyclerView.Adapt
                         displayImageRef(profileImgRef, binding, binding.publisherImg)
                     }
                 }
-            }
 
-            usersInformationRef.document(currentUid).addSnapshotListener { _, _ ->
                 usersInformationRef.document(currentUid).get().addOnSuccessListener { // 유저 정보 받아오기
                     val filename = it["profileImage"].toString() // 파일 이름을 받아와서
                     if (it["profileImage"].toString() == "default") { // profileImage 필드의 값이 default라면
@@ -62,7 +59,6 @@ class MyPageAdapter(private val viewModel: MyPageViewModel) : RecyclerView.Adapt
                         displayImageRef(profileImgRef, binding,  binding.myImg)
                     }
                 }
-            }
         }
     }
 

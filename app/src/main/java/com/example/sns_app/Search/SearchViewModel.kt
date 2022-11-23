@@ -62,9 +62,9 @@ class SearchViewModel : ViewModel() {
 
     // 임시적으로 데이터 추가해서 list 반환
     private fun createList() {
-        itemsCollectionRef.addSnapshotListener { snapshot, _ ->
+        itemsCollectionRef.get().addOnSuccessListener {
             val list: MutableList<SearchData> = mutableListOf()
-            for (document in snapshot!!) {
+            for (document in it!!) {
                 val profileImgRef = storage.getReference("ProfileImage/${document["profileImage"].toString()}")
                 if(document.id != currentUid) {
                     list.add(
