@@ -19,7 +19,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 // 리사이클러뷰 어댑터
-class MyPageAdapter(private val viewModel: MyPageViewModel) : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
+class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     private var items: List<PostingData> = emptyList()
     private val storage = Firebase.storage
     private val db = Firebase.firestore

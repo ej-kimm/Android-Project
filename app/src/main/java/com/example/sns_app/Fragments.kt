@@ -61,7 +61,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
             homeAdapter.setDataList(it) // Adapter에 데이터리스트 전달
         }
 
-        homeAdapter = HomeAdapter(viewModel)
+        homeAdapter = HomeAdapter()
         binding.homeRecyclerview.adapter = homeAdapter
         binding.homeRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.homeRecyclerview.setHasFixedSize(true) // same height
@@ -189,7 +189,6 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
             choosePictures()
         }
     }
-
 
     // 갤러리에서 이미지 선택
     private fun choosePictures() {

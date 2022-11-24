@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Follow.FollowListActivity
+import com.example.sns_app.Home.HomeAdapter
+import com.example.sns_app.HomeViewModel
 import com.example.sns_app.Login.LoginActivity
 import com.example.sns_app.R
 import com.example.sns_app.databinding.MypageFragmentBinding
@@ -36,7 +38,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     private val usersInformationRef = db.collection("usersInformation")
     private val currentUid = Firebase.auth.currentUser!!.uid
     private var filename = ""
-    lateinit var mypageAdapter: MyPageAdapter
+    lateinit var mypageAdapter: HomeAdapter
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> // 이미지 선택 후
         if (uri != null) { // 선택된 이미지가 존재한다면
@@ -83,13 +85,14 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             activity?.finish()
         }
 
-        val viewModel : MyPageViewModel by viewModels()
+        val viewModel : HomeViewModel by viewModels()
+        viewModel.createList()
 
-        viewModel.posts.observe(viewLifecycleOwner) {
+        viewModel.myPosts.observe(viewLifecycleOwner) {
             mypageAdapter.setDataList(it)
         }
 
-        mypageAdapter = MyPageAdapter(viewModel)
+        mypageAdapter = HomeAdapter()
         binding.mypageRecyclerview.adapter = mypageAdapter
         binding.mypageRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.mypageRecyclerview.setHasFixedSize(true) // same height

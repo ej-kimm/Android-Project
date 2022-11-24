@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sns_app.Home.FollowDto
 import com.example.sns_app.Posting.PostingData
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class HomeViewModel : ViewModel() {
     private val _posts = MutableLiveData<List<PostingData>>()
     val posts: LiveData<List<PostingData>> get() = _posts
+
+    private val _myPosts = MutableLiveData<List<PostingData>>()
+    val myPosts: LiveData<List<PostingData>> get() = _myPosts
 
     private val db = Firebase.firestore
     private val itemsCollectionRef = db.collection("posting")
@@ -40,6 +44,29 @@ class HomeViewModel : ViewModel() {
                     }
                 }
             _posts.value = list // 라이브 데이터에 직접 리스트 전달 ( SuccessListener 내부에서 ), 기존 문제 해결 부분
+        }
+    }
+
+    fun createList() {
+        itemsCollectionRef.get().addOnSuccessListener {
+            val list: MutableList<PostingData> = mutableListOf()
+            for (document in it) {
+                if (document["uid"].toString() == Firebase.auth.currentUser!!.uid){
+                    list.add(0,
+                        PostingData(
+                            context = document["context"].toString(),
+                            imageURL = document["imageURL"].toString(),
+                            time = document["time"].toString(),
+                            userID = document["userID"].toString(),
+                            UID = document["uid"].toString(),
+                            profileURL = document["profileURL"].toString(),
+                            heartClickPeople = hashMapOf(),
+                            heartCount = 0
+                        )
+                    )
+                    _myPosts.value = list
+                }
+            }
         }
     }
 }

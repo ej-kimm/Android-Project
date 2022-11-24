@@ -31,10 +31,12 @@ class UserPageActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityUserpageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         var profileImgRef : StorageReference
 
         //검색한 유저 아이디 받아오기
         val searchUID = intent.getStringExtra("data")
+        checkFollow(searchUID) // 해당 유저를 팔로우 했는지 체크
 
         val my_id = binding.myId
         val my_img = binding.mypageMyImg
@@ -79,6 +81,7 @@ class UserPageActivity : AppCompatActivity(){
                 if (followDto == null) {
                     followDto = FollowDto().apply {
                         followings[searchUID.toString()] = true
+                        binding.followBtn.text = "언팔로우"
 //                        notifyFollow()
                     }
                 } else {
@@ -86,9 +89,11 @@ class UserPageActivity : AppCompatActivity(){
                         if (followings.containsKey(searchUID.toString())) {
                             // 언팔로우
                             followings.remove(searchUID.toString())
+                            binding.followBtn.text = "팔로우"
                         } else {
                             // 팔로우
                             followings.set(searchUID.toString(), true)
+                            binding.followBtn.text = "언팔로우"
 //                            notifyFollow()
                         }
                     }
@@ -136,6 +141,17 @@ class UserPageActivity : AppCompatActivity(){
         binding.recyclerSearchUser.layoutManager = LinearLayoutManager(this)
         binding.recyclerSearchUser.setHasFixedSize(true) // same height
 
+    }
+
+    private fun checkFollow(searchUID: String?) {
+        db.collection("follow").document(currentUid).get().addOnSuccessListener {
+            val followDto = it.toObject(FollowDto::class.java)
+            if (followDto != null) {
+                if(followDto.followings.get(searchUID) == true) { // 해당 유저를 팔로우한 상태라면
+                    binding.followBtn.text = "언팔로우" // 버튼의 Text를 언팔로우로 변경
+                }
+            }
+        }
     }
 
 }

@@ -10,7 +10,6 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.R
-import com.example.sns_app.HomeViewModel
 import com.example.sns_app.databinding.PostLayoutBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -19,7 +18,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 // 리사이클러뷰 어댑터
-class HomeAdapter(private val viewModel: HomeViewModel) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     private var items: List<PostingData> = emptyList()
     private val storage = Firebase.storage
     private val db = Firebase.firestore
