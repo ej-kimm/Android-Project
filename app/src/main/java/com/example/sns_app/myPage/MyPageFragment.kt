@@ -46,7 +46,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
                 val prefilename = it["profileImage"].toString() // 기존 파일 이름을 받아와서
                 if(it["profileImage"].toString() == "default") { // default는 기존 파일 삭제 없이 업로드
                     uploadProfile(uri)
-                } else { // 기존에 프로필을 변경했따면
+                } else { // 기존에 프로필을 변경했다면
                     val profileImgRef = storage.getReference("ProfileImage/${prefilename}") // 유저 정보의 기존 파일 정보 참조 획득
                     profileImgRef.delete().addOnSuccessListener { // 기존 파일 삭제 후
                         uploadProfile(uri)

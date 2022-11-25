@@ -3,6 +3,7 @@ package com.example.sns_app.Search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -12,7 +13,7 @@ class UserPageViewModel() : ViewModel() {
     val posts: LiveData<List<SearchUserData>> get() = _posts
 
     private val db = Firebase.firestore
-    private val itemsCollectionRef = db.collection("posting")
+    private val itemsCollectionRef = db.collection("posting").orderBy("time", Query.Direction.DESCENDING)
 
     init {
 //        createList()
@@ -27,7 +28,7 @@ class UserPageViewModel() : ViewModel() {
             val list: MutableList<SearchUserData> = mutableListOf()
             for (document in it!!) {
                 if (document["uid"].toString() == uid){ // 인자로 전달받은 uid 정보 띄우기
-                    list.add(0,
+                    list.add(
                         SearchUserData(
                             context = document["context"].toString(),
                             imageURL = document["imageURL"].toString(),

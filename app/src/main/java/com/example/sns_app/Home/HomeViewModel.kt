@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.sns_app.Home.FollowDto
 import com.example.sns_app.Posting.PostingData
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -17,7 +18,7 @@ class HomeViewModel : ViewModel() {
     val myPosts: LiveData<List<PostingData>> get() = _myPosts
 
     private val db = Firebase.firestore
-    private val itemsCollectionRef = db.collection("posting")
+    private val itemsCollectionRef = db.collection("posting").orderBy("time", Query.Direction.DESCENDING)
 
     fun getFollowInfo(followDto: FollowDto) { // 팔로우 데이터를 받으면
         createList(followDto.followings.keys) // 팔로잉한 유저 목록을 createList 에 전달
@@ -52,7 +53,7 @@ class HomeViewModel : ViewModel() {
             val list: MutableList<PostingData> = mutableListOf()
             for (document in it) {
                 if (document["uid"].toString() == Firebase.auth.currentUser!!.uid){
-                    list.add(0,
+                    list.add(
                         PostingData(
                             context = document["context"].toString(),
                             imageURL = document["imageURL"].toString(),

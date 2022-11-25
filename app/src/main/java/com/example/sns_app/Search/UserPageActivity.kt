@@ -81,7 +81,6 @@ class UserPageActivity : AppCompatActivity(){
                 if (followDto == null) {
                     followDto = FollowDto().apply {
                         followings[searchUID.toString()] = true
-                        binding.followBtn.text = "언팔로우"
 //                        notifyFollow()
                     }
                 } else {
@@ -89,11 +88,9 @@ class UserPageActivity : AppCompatActivity(){
                         if (followings.containsKey(searchUID.toString())) {
                             // 언팔로우
                             followings.remove(searchUID.toString())
-                            binding.followBtn.text = "팔로우"
                         } else {
                             // 팔로우
                             followings.set(searchUID.toString(), true)
-                            binding.followBtn.text = "언팔로우"
 //                            notifyFollow()
                         }
                     }
@@ -144,12 +141,15 @@ class UserPageActivity : AppCompatActivity(){
     }
 
     private fun checkFollow(searchUID: String?) {
-        db.collection("follow").document(currentUid).get().addOnSuccessListener {
-            val followDto = it.toObject(FollowDto::class.java)
+        db.collection("follow").document(currentUid).addSnapshotListener { snapshot ,_ ->
+            val followDto = snapshot?.toObject(FollowDto::class.java)
             if (followDto != null) {
                 if(followDto.followings.get(searchUID) == true) { // 해당 유저를 팔로우한 상태라면
                     binding.followBtn.text = "언팔로우" // 버튼의 Text를 언팔로우로 변경
-                }
+                } else
+                    binding.followBtn.text = "팔로우"
+            } else {
+                binding.followBtn.text = "팔로우"
             }
         }
     }
