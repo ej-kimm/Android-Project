@@ -14,10 +14,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.603"
+        app:layout_constraintHorizontal_bias="0.784"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.051" />
+        app:layout_constraintVertical_bias="0.049" />
 
     <Button
         android:id="@+id/back_btn"
@@ -62,8 +62,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_f"
-        android:layout_width="410dp"
-        android:layout_height="568dp"
+        android:layout_width="411dp"
+        android:layout_height="556dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
