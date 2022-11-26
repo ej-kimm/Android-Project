@@ -3,8 +3,10 @@ package com.example.sns_app.myPage
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -47,7 +49,7 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
         }
     }
 
-    inner class ViewHolder(val binding: PostLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: PostLayoutBinding, val layout: View) : RecyclerView.ViewHolder(binding.root) {
         val publisherId = binding.publisherId // onBindViewHolder 에 전달
         val publisherId2 = binding.publisherId2
         val postContent = binding.postContent
@@ -67,7 +69,7 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = PostLayoutBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding, layoutInflater.inflate(R.layout.post_layout, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) { // 데이터 바인딩
@@ -76,6 +78,23 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
         holder.publisherId.text = items[position].userID
         holder.publisherId2.text = items[position].userID
         holder.postContent.text = items[position].context
+
+        holder.binding.textViewOptions.setOnClickListener { // 게시글 삭제 팝업 메뉴
+            val popup = PopupMenu(holder.layout.context, it)
+            popup.inflate(R.menu.mypage_menu)
+            popup.setOnMenuItemClickListener { menu ->
+                when (menu.itemId) {
+//                    R.id.edit ->
+//                        true
+                    R.id.delete -> {
+                        println("hio")
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
         postImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
             requestManager.load(bmp).into(holder.postImg)
