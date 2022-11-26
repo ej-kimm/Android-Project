@@ -20,4 +20,9 @@
     <string name="search">Search</string>
     <string name="post">Post</string>
     <string name="mypage">MyPage</string>
+    <string name="myPage_post">게시물</string>
+    <string name="myPage_follower">팔로워</string>
+    <string name="myPage_following">팔로잉</string>
+    <string name="myPage_editProfile">프로필 사진 편집</string>
+    <string name="myPage_signOut">로그아웃</string>
 </resources>

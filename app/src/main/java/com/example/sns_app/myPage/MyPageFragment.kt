@@ -4,11 +4,14 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +64,12 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 //        super.onViewCreated(view, savedInstanceState)
         binding = MypageFragmentBinding.bind(view)
         updateProfileImage() // 초기 화면 구성 시 이미지 로딩
+
+        // progressBar 추가, 상의 후 다른 View 추가
+        val delay = 1000L
+        Handler(Looper.myLooper()!!).postDelayed({
+            binding.progressBar.isVisible = false
+        }, delay)
 
         // 하단의 코드는 UI 구성 확인을 위한 테스트 코드임
         binding.postCount.text = "1"

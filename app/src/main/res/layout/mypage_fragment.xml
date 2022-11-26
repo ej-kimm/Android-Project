@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_id" />
+
     <TextView
         android:id="@+id/my_id"
         android:layout_width="wrap_content"
@@ -58,7 +69,7 @@
         android:id="@+id/post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="게시물"
+        android:text="@string/myPage_post"
         app:layout_constraintEnd_toEndOf="@+id/post_count"
         app:layout_constraintStart_toStartOf="@+id/post_count"
         app:layout_constraintTop_toBottomOf="@+id/post_count" />
@@ -67,7 +78,7 @@
         android:id="@+id/follower"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="팔로워"
+        android:text="@string/myPage_follower"
         app:layout_constraintEnd_toEndOf="@+id/follower_count"
         app:layout_constraintStart_toStartOf="@+id/follower_count"
         app:layout_constraintTop_toBottomOf="@+id/follower_count" />
@@ -76,7 +87,7 @@
         android:id="@+id/following"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="팔로잉"
+        android:text="@string/myPage_following"
         app:layout_constraintEnd_toEndOf="@+id/following_count"
         app:layout_constraintStart_toStartOf="@+id/following_count"
         app:layout_constraintTop_toBottomOf="@+id/following_count" />
@@ -88,7 +99,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:text="프로필 사진 편집"
+        android:text="@string/myPage_editProfile"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -101,7 +112,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:text="로그아웃"
+        android:text="@string/myPage_signOut"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_profile" />
