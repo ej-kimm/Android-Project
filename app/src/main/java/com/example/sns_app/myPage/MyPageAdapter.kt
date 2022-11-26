@@ -87,7 +87,7 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
 //                    R.id.edit ->
 //                        true
                     R.id.delete -> {
-                        println("hio")
+                        deletePost(postImgRef, postUids[position]) // 게시글 삭제 함수
                         true
                     }
                     else -> false
@@ -146,6 +146,29 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     }
 
     override fun getItemCount() = items.size
+
+    private fun deletePost(postImgRef: StorageReference, postUid: String) { // 해당 게시글을 삭제함
+        val postImage = postImgRef.toString().split("/")[4] // ex) IMAGE_20221126_070433.png
+        db.collection("posting").get()
+            .addOnSuccessListener {
+                items.clear() // 기존 리스트 초기화
+                postUids.clear() // 기존 리스트 초기화
+                if (it != null) { // 게시글 존재
+                    for (doc in it) {
+                        if (doc["uid"] == currentUid && doc["imageURL"] == postImage) { // 자신이 올린 게시글 이미지의 URL과 같으면
+                            db.collection("posting").document(postUid).delete() // firestore에서 해당 글 삭제
+                            postImgRef.delete() // storage에서 해당 사진 삭제
+                            val item = doc.toObject(PostingData::class.java)
+                            items.add(item)
+                            postUids.add(doc.id)
+                        }
+                    }
+                    notifyDataSetChanged()
+                } else { // 게시글 없음
+                    println("null")
+                }
+        }
+    }
 
     private fun displayImageRef(imageRef: StorageReference?, binding: PostLayoutBinding, view: ImageView) { // 이미지를 화면에 띄움
         val requestManager : RequestManager = Glide.with(binding.root)
