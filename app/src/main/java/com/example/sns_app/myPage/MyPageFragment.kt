@@ -41,7 +41,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     private val usersInformationRef = db.collection("usersInformation")
     private val currentUid = Firebase.auth.currentUser!!.uid
     private var filename = ""
-    lateinit var mypageAdapter: HomeAdapter
+    lateinit var mypageAdapter: MyPageAdapter
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> // 이미지 선택 후
         if (uri != null) { // 선택된 이미지가 존재한다면
@@ -94,14 +94,16 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
             activity?.finish()
         }
 
-        val viewModel : HomeViewModel by viewModels()
-        viewModel.createList()
+//        val viewModel : HomeViewModel by viewModels()
+//        viewModel.createList()
+//
+//        viewModel.myPosts.observe(viewLifecycleOwner) {
+//            mypageAdapter.setDataList(it)
+//        }
+//
+//        mypageAdapter = HomeAdapter()
 
-        viewModel.myPosts.observe(viewLifecycleOwner) {
-            mypageAdapter.setDataList(it)
-        }
-
-        mypageAdapter = HomeAdapter()
+        mypageAdapter = MyPageAdapter()
         binding.mypageRecyclerview.adapter = mypageAdapter
         binding.mypageRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.mypageRecyclerview.setHasFixedSize(true) // same height

@@ -28,7 +28,7 @@ class MyPageViewModel : ViewModel() {
             val list: MutableList<PostingData> = mutableListOf()
             for (document in it) {
                 if (document["uid"].toString() == Firebase.auth.currentUser!!.uid){
-                    list.add(0,
+                    list.add(
                         PostingData(
                             context = document["context"].toString(),
                             imageURL = document["imageURL"].toString(),
