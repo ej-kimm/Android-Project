@@ -122,9 +122,27 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
             }
         }
         holder.favoriteBtn.setOnClickListener { // 위치 파악 예시, 게시글 자동 id 확인 가능
-            println(postUids[position] + " &&&&&&&&&&")
+            favoriteEvent(position)
         }
         holder.bind()
+    }
+
+    private fun favoriteEvent(position: Int) {
+        val tsDoc = db.collection("posting").document(postUids[position])
+        db.runTransaction { transition ->
+            val postDto = transition.get(tsDoc).toObject(PostingData::class.java)
+
+            // 좋아요가 눌린 경우
+            if (postDto!!.heartClickPeople.containsKey(currentUid)) {
+                postDto.heartCount -= 1
+                postDto.heartClickPeople.remove(currentUid)
+            } else {    // 눌리지 않은 경우
+                postDto.heartCount += 1
+                postDto.heartClickPeople[currentUid] = true
+            }
+
+            transition.set(tsDoc, postDto)
+        }
     }
 
     override fun getItemCount() = items.size

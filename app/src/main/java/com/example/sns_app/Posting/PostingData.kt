@@ -9,7 +9,7 @@ data class PostingData( // 어댑터의 init 부분에서 발생하는 오류를
     var profileURL: String = "",
     var time: String = "", // 글을 올린 시간
     var heartCount: Int = 0, // 해당 글의 하트 수(좋아요)
-    var heartClickPeople: Map<String, Boolean> = HashMap()) { // 하트 누른 사람 관리
+    var heartClickPeople: MutableMap<String, Boolean> = HashMap()) { // 하트 누른 사람 관리
 
     // 해당 글의 댓글 관리 (아직 사용안함)
     data class Comment(var UID: String,
