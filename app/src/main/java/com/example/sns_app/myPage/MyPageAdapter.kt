@@ -84,28 +84,32 @@ class MyPageAdapter(uid: String) : RecyclerView.Adapter<MyPageAdapter.ViewHolder
         holder.publisherId2.text = items[position].userID
         holder.postContent.text = items[position].context
 
-        holder.binding.textViewOptions.setOnClickListener { // 게시글 삭제 팝업 메뉴
-            val popup = PopupMenu(holder.layout.context, it)
-            popup.inflate(R.menu.mypage_menu)
-            popup.setOnMenuItemClickListener { menu ->
-                when (menu.itemId) {
-                    R.id.edit -> {
-                        val intent = Intent(holder.layout.context, UserPostingActivity::class.java)
-                        intent.putExtra("context", items[position].context)
-                        intent.putExtra("imageURL", items[position].imageURL)
-                        intent.putExtra("postUid", postUids[position])
-                        holder.layout.context.startActivity(intent)
-                        true
+        if(currentUid == items[position].UID) {
+            holder.binding.textViewOptions.setOnClickListener { // 게시글 삭제 팝업 메뉴
+                val popup = PopupMenu(holder.layout.context, it)
+                popup.inflate(R.menu.mypage_menu)
+                popup.setOnMenuItemClickListener { menu ->
+                    when (menu.itemId) {
+                        R.id.edit -> {
+                            val intent = Intent(holder.layout.context, UserPostingActivity::class.java)
+                            intent.putExtra("context", items[position].context)
+                            intent.putExtra("imageURL", items[position].imageURL)
+                            intent.putExtra("postUid", postUids[position])
+                            holder.layout.context.startActivity(intent)
+                            true
+                        }
+                        R.id.delete -> {
+                            deletePost(postImgRef, postUids[position]) // 게시글 삭제 함수
+                            true
+                        }
+                        else -> false
                     }
-                    R.id.delete -> {
-                        deletePost(postImgRef, postUids[position]) // 게시글 삭제 함수
-                        true
-                    }
-                    else -> false
                 }
+                popup.show()
             }
-            popup.show()
+
         }
+
         postImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
             val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
             requestManager.load(bmp).into(holder.postImg)
