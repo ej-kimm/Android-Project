@@ -33,4 +33,5 @@
     <string name="select_birth">날짜선택</string>
     <string name="email_hint">이메일을 입력하세요</string>
     <string name="signUpBtn">가입하기</string>
+    <string name="post_edit_option">⋮</string>
 </resources>
