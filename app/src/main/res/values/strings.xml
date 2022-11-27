@@ -25,4 +25,12 @@
     <string name="myPage_following">팔로잉</string>
     <string name="myPage_editProfile">프로필 사진 편집</string>
     <string name="myPage_signOut">로그아웃</string>
+    <string name="signUp">회원가입</string>
+    <string name="welcome_msg">환영합니다!</string>
+    <string name="nick_hint">닉네임을 입력하세요 (최소 2자~최대 5자)</string>
+    <string name="pwd_hint">비밀번호를 입력하세요 (6자~10자)</string>
+    <string name="birth">생년월일 (2000-01-01)</string>
+    <string name="select_birth">날짜선택</string>
+    <string name="email_hint">이메일을 입력하세요</string>
+    <string name="signUpBtn">가입하기</string>
 </resources>
