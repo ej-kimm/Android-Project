@@ -200,7 +200,6 @@ class PostFragment : Fragment(R.layout.userposting_frament) {
             intent.type = "image/*"
             launcher.launch(intent)
         } else {
-            //requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }

@@ -1,6 +1,7 @@
 package com.example.sns_app.myPage
 
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.sns_app.Posting.PostingData
+import com.example.sns_app.Posting.UserPostingActivity
 import com.example.sns_app.R
 import com.example.sns_app.databinding.PostLayoutBinding
 import com.google.firebase.auth.ktx.auth
@@ -20,6 +22,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+
 
 // 리사이클러뷰 어댑터
 class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
@@ -31,22 +34,23 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     private val currentUid = Firebase.auth.currentUser!!.uid
 
     init { // 어댑터 연결 시 어댑터에서 게시글 정보를 가져옴
-        db.collection("posting").orderBy("time", Query.Direction.DESCENDING).get().addOnSuccessListener {
-            items.clear() // 기존 리스트 초기화
-            postUids.clear() // 기존 리스트 초기화
-            if (it != null) { // 게시글 존재
-                for (doc in it) {
-                    if (doc["uid"] == currentUid) { // 본인 게시글만 리스트에 추가
+        db.collection("posting")
+            .whereEqualTo("uid", currentUid)
+            .orderBy("time", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, _ ->
+                items.clear() // 기존 리스트 초기화
+                postUids.clear() // 기존 리스트 초기화
+                if (snapshot != null) { // 게시글 존재
+                    for (doc in snapshot) {
                         val item = doc.toObject(PostingData::class.java)
                         items.add(item)
                         postUids.add(doc.id)
                     }
+                    notifyDataSetChanged()
+                } else { // 게시글 없음
+                    println("null")
                 }
-                notifyDataSetChanged()
-            } else { // 게시글 없음
-                println("null")
             }
-        }
     }
 
     inner class ViewHolder(val binding: PostLayoutBinding, val layout: View) : RecyclerView.ViewHolder(binding.root) {
@@ -84,8 +88,14 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
             popup.inflate(R.menu.mypage_menu)
             popup.setOnMenuItemClickListener { menu ->
                 when (menu.itemId) {
-//                    R.id.edit ->
-//                        true
+                    R.id.edit -> {
+                        val intent = Intent(holder.layout.context, UserPostingActivity::class.java)
+                        intent.putExtra("context", items[position].context)
+                        intent.putExtra("imageURL", items[position].imageURL)
+                        intent.putExtra("postUid", postUids[position])
+                        holder.layout.context.startActivity(intent)
+                        true
+                    }
                     R.id.delete -> {
                         deletePost(postImgRef, postUids[position]) // 게시글 삭제 함수
                         true
@@ -148,26 +158,8 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     override fun getItemCount() = items.size
 
     private fun deletePost(postImgRef: StorageReference, postUid: String) { // 해당 게시글을 삭제함
-        val postImage = postImgRef.toString().split("/")[4] // ex) IMAGE_20221126_070433.png
-        db.collection("posting").get()
-            .addOnSuccessListener {
-                items.clear() // 기존 리스트 초기화
-                postUids.clear() // 기존 리스트 초기화
-                if (it != null) { // 게시글 존재
-                    for (doc in it) {
-                        if (doc["uid"] == currentUid && doc["imageURL"] == postImage) { // 자신이 올린 게시글 이미지의 URL과 같으면
-                            db.collection("posting").document(postUid).delete() // firestore에서 해당 글 삭제
-                            postImgRef.delete() // storage에서 해당 사진 삭제
-                            val item = doc.toObject(PostingData::class.java)
-                            items.add(item)
-                            postUids.add(doc.id)
-                        }
-                    }
-                    notifyDataSetChanged()
-                } else { // 게시글 없음
-                    println("null")
-                }
-        }
+        db.collection("posting").document(postUid).delete() // firestore에서 해당 글 삭제
+        postImgRef.delete() // storage에서 해당 사진 삭제
     }
 
     private fun displayImageRef(imageRef: StorageReference?, binding: PostLayoutBinding, view: ImageView) { // 이미지를 화면에 띄움
