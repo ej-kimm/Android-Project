@@ -23,14 +23,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login.SignupActivity"
+            android:name=".login.SignupActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login.LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -49,7 +49,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".Follow.FollowListActivity" />
+        <activity android:name=".follow.FollowListActivity" />
         <activity android:name=".Search.UserPageActivity" />
     </application>
 

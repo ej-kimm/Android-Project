@@ -12,7 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
-        android:text="&#8942;"
         android:textAppearance="?android:textAppearanceLarge"
         app:layout_constraintBottom_toTopOf="@+id/post_img"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,14 +38,13 @@
         app:layout_constraintStart_toStartOf="@+id/publisher_id2"
         app:layout_constraintTop_toBottomOf="@+id/publisher_id2"
         tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="TODO" />
+        />
 
     <TextView
         android:id="@+id/publisher_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="TextView"
         app:layout_constraintBottom_toBottomOf="@+id/publisher_img"
         app:layout_constraintStart_toEndOf="@+id/publisher_img"
         app:layout_constraintTop_toTopOf="@+id/publisher_img" />
@@ -88,8 +86,7 @@
         android:id="@+id/publisher_id2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="@+id/favorite_btn"
         app:layout_constraintTop_toBottomOf="@+id/favorite_btn" />
 
@@ -98,7 +95,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/publisher_id2"
         app:layout_constraintTop_toTopOf="@+id/publisher_id2" />
 
@@ -114,5 +110,15 @@
         android:hint="댓글 추가..."
         app:layout_constraintStart_toEndOf="@+id/my_img"
         app:layout_constraintTop_toTopOf="@+id/my_img" />
+
+    <TextView
+        android:id="@+id/heart_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/publisher_id2"
+        app:layout_constraintEnd_toEndOf="@+id/favorite_btn"
+        app:layout_constraintStart_toStartOf="@+id/favorite_btn"
+        app:layout_constraintTop_toBottomOf="@+id/favorite_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.sns_app.Login
+package com.example.sns_app.login
 
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,7 +30,7 @@ class SignupActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
                 binding.signupBirth.text = year.toString() + "-" + (month + 1).toString() + "-" + day.toString()
             }, year, month, day)
-            datePickerDialog.datePicker.maxDate = calendar.timeInMillis;
+            datePickerDialog.datePicker.maxDate = calendar.timeInMillis
             datePickerDialog.show()
         }
 
@@ -52,7 +52,7 @@ class SignupActivity : AppCompatActivity() {
 
     // collection에 user의 정보를 담음(식별자는 UID)
     private fun addInformation(users: UserInformationData, uid: String) {
-        val itemMap = users.userHashMap();
+        val itemMap = users.userHashMap()
         usersCollectionRef.document(uid).set(itemMap) // 고유 UID 밑에 아이디, 이름, 생일, 비밀번호, 이메일저장
     }
 

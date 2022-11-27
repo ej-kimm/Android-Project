@@ -1,4 +1,4 @@
-package com.example.sns_app.Login
+package com.example.sns_app.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -35,11 +35,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun canLogin(userEmail: String, userPassword: String): Boolean {
         if (userEmail.isEmpty()) {
-            Toast.makeText(applicationContext, "이메일을 입력해주세요", Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext, "이메일을 입력해주세요", Toast.LENGTH_LONG).show()
             return false
         }
         else if (userPassword.isEmpty()) {
-            Toast.makeText(applicationContext, "비밀번호를 입력해주세요", Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext, "비밀번호를 입력해주세요", Toast.LENGTH_LONG).show()
             return false
         }
         return true

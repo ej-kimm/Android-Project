@@ -13,14 +13,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.sns_app.Follow.FollowListActivity
-import com.example.sns_app.Home.HomeAdapter
-import com.example.sns_app.HomeViewModel
-import com.example.sns_app.Login.LoginActivity
+import com.example.sns_app.follow.FollowListActivity
+import com.example.sns_app.login.LoginActivity
 import com.example.sns_app.R
 import com.example.sns_app.databinding.MypageFragmentBinding
 import com.google.android.material.snackbar.Snackbar
@@ -66,7 +63,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
         updateProfileImage() // 초기 화면 구성 시 이미지 로딩
 
         // progressBar 추가, 상의 후 다른 View 추가
-        val delay = 1000L
+        val delay = 500L
         Handler(Looper.myLooper()!!).postDelayed({
             binding.progressBar.isVisible = false
         }, delay)

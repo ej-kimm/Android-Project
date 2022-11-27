@@ -1,4 +1,4 @@
-package com.example.sns_app.Follow
+package com.example.sns_app.follow
 
 
 import android.os.Bundle
@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sns_app.Home.FollowDto
+import com.example.sns_app.home.FollowDto
 import com.example.sns_app.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore

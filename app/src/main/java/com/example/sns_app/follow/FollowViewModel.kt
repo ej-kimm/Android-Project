@@ -1,4 +1,4 @@
-package com.example.sns_app.Follow
+package com.example.sns_app.follow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

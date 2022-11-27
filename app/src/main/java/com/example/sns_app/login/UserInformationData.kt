@@ -1,4 +1,4 @@
-package com.example.sns_app.Login
+package com.example.sns_app.login
 
 data class UserInformationData(val nickname: String, val password: String, val birth: String,
                                val email: String, val userID: String) {

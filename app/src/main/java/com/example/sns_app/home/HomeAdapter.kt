@@ -1,9 +1,10 @@
-package com.example.sns_app.Home
+package com.example.sns_app.home
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -58,6 +59,17 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
                     displayImageRef(profileImgRef, binding, binding.myImg)
                 }
             }
+
+            binding.favoriteBtn.isChecked = item.heartClickPeople.containsKey(currentUid)
+
+            binding.favoriteBtn.setOnClickListener {
+                db.collection("posting").whereEqualTo("imageURL",item.imageURL).get().addOnSuccessListener {
+                    for(doc in it) {
+                        favoriteEvent(doc.id, binding.heartCount)
+                    }
+                }
+            }
+
         }
     }
 
@@ -77,6 +89,24 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     fun setDataList(list: List<PostingData>) {
         items = list
         notifyDataSetChanged()
+    }
+
+    private fun favoriteEvent(postUid: String, heartCount: TextView) {
+        val tsDoc = db.collection("posting").document(postUid)
+        db.runTransaction { transition ->
+            val postDto = transition.get(tsDoc).toObject(PostingData::class.java)
+
+            // 좋아요가 눌린 경우
+            if (postDto!!.heartClickPeople.containsKey(currentUid)) {
+                postDto.heartCount -= 1
+                postDto.heartClickPeople.remove(currentUid)
+            } else {    // 눌리지 않은 경우
+                postDto.heartCount += 1
+                postDto.heartClickPeople[currentUid] = true
+            }
+
+            transition.set(tsDoc, postDto)
+        }
     }
 
     private fun displayImageRef(imageRef: StorageReference?, binding: PostLayoutBinding, view: ImageView) { // 이미지를 화면에 띄움

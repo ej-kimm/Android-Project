@@ -2,12 +2,15 @@ package com.example.sns_app.Search
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.sns_app.Home.FollowDto
+import com.example.sns_app.home.FollowDto
 import com.example.sns_app.R
 import com.example.sns_app.databinding.ActivityUserpageBinding
 import com.google.firebase.auth.ktx.auth
@@ -31,6 +34,12 @@ class UserPageActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityUserpageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // progressBar 추가, 상의 후 다른 View 추가
+        val delay = 500L
+        Handler(Looper.myLooper()!!).postDelayed({
+            binding.userProgressBar.isVisible = false
+        }, delay)
 
         var profileImgRef : StorageReference
 

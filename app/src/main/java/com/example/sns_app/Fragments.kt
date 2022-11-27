@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,11 +16,12 @@ import android.view.WindowManager
 import android.widget.SearchView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sns_app.Home.FollowDto
-import com.example.sns_app.Home.HomeAdapter
+import com.example.sns_app.home.FollowDto
+import com.example.sns_app.home.HomeAdapter
 import com.example.sns_app.Posting.PostingData
 import com.example.sns_app.Search.*
 import com.example.sns_app.databinding.HomeFragmentBinding
@@ -43,6 +46,13 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
         val binding = HomeFragmentBinding.bind(view)
+
+        // progressBar 추가, 상의 후 다른 View 추가
+        val delay = 500L
+        Handler(Looper.myLooper()!!).postDelayed({
+            binding.homeProgressBar.isVisible = false
+        }, delay)
+
         val db = Firebase.firestore
         val viewModel : HomeViewModel by viewModels()
         // 팔로우 컬렉션에서 현재 접속한 uid document 참조 획득

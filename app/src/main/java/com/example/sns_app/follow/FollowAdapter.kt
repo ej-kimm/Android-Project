@@ -1,4 +1,4 @@
-package com.example.sns_app.Follow
+package com.example.sns_app.follow
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +14,7 @@ import android.widget.Button
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 
-class FollowAdapter() :
+class FollowAdapter :
     RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
     private var items: List<FollowData> = emptyList()
 
@@ -47,11 +47,11 @@ class FollowAdapter() :
             }
 
             //사진 설정
-            if(item.img.toString().contains("default")) {
+            if(item.img.contains("default")) {
                 Glide.with(itemView).load(R.drawable.profile)
                     .apply(RequestOptions.circleCropTransform()).into(imgProfile)
             } else {
-                profileImgRef.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
+                profileImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
                     val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
                     Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform()).into(imgProfile)
                 }

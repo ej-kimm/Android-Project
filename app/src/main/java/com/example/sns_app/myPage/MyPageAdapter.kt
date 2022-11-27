@@ -61,6 +61,7 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
         val publisherImg = binding.publisherImg
         val myImg = binding.myImg
         val favoriteBtn = binding.favoriteBtn
+        val heartCount = binding.heartCount
         fun bind() { // 신경 안써도 되는 부분, 아이템 자체 클릭 리스너 ?
             val pos = adapterPosition
 
@@ -134,6 +135,11 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
         holder.favoriteBtn.setOnClickListener { // 위치 파악 예시, 게시글 자동 id 확인 가능
             favoriteEvent(position)
         }
+
+        // 좋아요를 이미 누른 상태라면 체크 상태로 변경
+        holder.favoriteBtn.isChecked = items[position].heartClickPeople.containsKey(currentUid)
+        holder.heartCount.text = items[position].heartCount.toString()
+
         holder.bind()
     }
 
