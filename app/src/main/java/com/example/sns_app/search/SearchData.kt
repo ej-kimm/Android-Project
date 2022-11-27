@@ -1,4 +1,4 @@
-package com.example.sns_app.Search
+package com.example.sns_app.search
 
 import com.google.firebase.storage.StorageReference
 

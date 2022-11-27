@@ -1,4 +1,4 @@
-package com.example.sns_app.Posting
+package com.example.sns_app.posting
 
 import android.Manifest
 import android.app.Activity
@@ -49,7 +49,7 @@ class UserPostingActivity : AppCompatActivity() {
         val postUid = intent.getStringExtra("postUid").toString()
 
         binding.editText.setText(context) // 수정할 context 보여주기
-        binding.editMaxText.text = "(${context.length.toString()}/100)"
+        binding.editMaxText.text = "(${context.length}/100)"
 
         val postImgRef = storage.getReference("PostingImage/$imageURL")
         postImgRef.getBytes(Long.MAX_VALUE).addOnSuccessListener {
@@ -102,7 +102,7 @@ class UserPostingActivity : AppCompatActivity() {
                     imageRef.downloadUrl.addOnCompleteListener { uri ->
                         val url = file // 이미지 URL
                         postingCollectionRef.document(postUid).update("context", "$context") // context 수정
-                        postingCollectionRef.document(postUid).update("imageURL", "$url") // imageURL 수정
+                        postingCollectionRef.document(postUid).update("imageURL", url) // imageURL 수정
                     }
                     Snackbar.make(binding.root, "업로드를 완료했습니다", Snackbar.LENGTH_SHORT).show()
                 } else if (it.isCanceled) {

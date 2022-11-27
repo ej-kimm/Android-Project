@@ -100,7 +100,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 //
 //        mypageAdapter = HomeAdapter()
 
-        mypageAdapter = MyPageAdapter()
+        mypageAdapter = MyPageAdapter(currentUid)
         binding.mypageRecyclerview.adapter = mypageAdapter
         binding.mypageRecyclerview.layoutManager = LinearLayoutManager(activity)
         binding.mypageRecyclerview.setHasFixedSize(true) // same height

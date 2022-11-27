@@ -16,7 +16,7 @@
         android:theme="@style/Theme.SNS_App"
         tools:targetApi="31">
         <activity
-            android:name=".Posting.UserPostingActivity"
+            android:name=".posting.UserPostingActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -50,7 +50,7 @@
                 android:value="" />
         </activity>
         <activity android:name=".follow.FollowListActivity" />
-        <activity android:name=".Search.UserPageActivity" />
+        <activity android:name=".search.UserPageActivity" />
     </application>
 
 </manifest>

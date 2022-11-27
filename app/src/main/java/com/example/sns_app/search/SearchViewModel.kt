@@ -1,4 +1,4 @@
-package com.example.sns_app.Search
+package com.example.sns_app.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import com.google.firebase.storage.ktx.storage
 class SearchViewModel : ViewModel() {
 
     var db : FirebaseFirestore = Firebase.firestore
-    var itemsCollectionRef = db.collection("usersInformation")
+    private var itemsCollectionRef = db.collection("usersInformation")
     private val storage = Firebase.storage
 
     private val currentUid = Firebase.auth.currentUser!!.uid
@@ -39,7 +39,7 @@ class SearchViewModel : ViewModel() {
 
     fun searchingList(p0: String?) {
         val list: MutableList<SearchData> = mutableListOf()
-        searchData.value?.forEachIndexed { i, v ->
+        searchData.value?.forEachIndexed { _, v ->
 
             if(v.id.lowercase().contains(p0!!.lowercase()) || v.name.lowercase().contains(p0.lowercase())){
                     list.add(
@@ -54,10 +54,6 @@ class SearchViewModel : ViewModel() {
             }
         }
         _retrieved.value = list
-    }
-
-    fun setData(data: List<SearchData>) {
-        _searchData.value = data
     }
 
     // 임시적으로 데이터 추가해서 list 반환

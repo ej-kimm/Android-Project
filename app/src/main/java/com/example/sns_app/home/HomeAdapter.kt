@@ -4,12 +4,11 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.example.sns_app.Posting.PostingData
+import com.example.sns_app.posting.PostingData
 import com.example.sns_app.R
 import com.example.sns_app.databinding.PostLayoutBinding
 import com.google.firebase.auth.ktx.auth
@@ -65,10 +64,12 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
             binding.favoriteBtn.setOnClickListener {
                 db.collection("posting").whereEqualTo("imageURL",item.imageURL).get().addOnSuccessListener {
                     for(doc in it) {
-                        favoriteEvent(doc.id, binding.heartCount)
+                        favoriteEvent(doc.id)
                     }
                 }
             }
+
+            binding.heartCount.text = item.heartCount.toString()
 
         }
     }
@@ -91,7 +92,7 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    private fun favoriteEvent(postUid: String, heartCount: TextView) {
+    private fun favoriteEvent(postUid: String) {
         val tsDoc = db.collection("posting").document(postUid)
         db.runTransaction { transition ->
             val postDto = transition.get(tsDoc).toObject(PostingData::class.java)

@@ -1,4 +1,4 @@
-package com.example.sns_app.Search
+package com.example.sns_app.search
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -42,9 +42,9 @@ class SearchAdapter(private val context: Fragment) :
                 Glide.with(itemView).load(R.drawable.profile)
                     .apply(RequestOptions.circleCropTransform()).into(imgProfile)
             } else {
-                item.img.getBytes(Long.MAX_VALUE)?.addOnSuccessListener {
+                item.img.getBytes(Long.MAX_VALUE).addOnSuccessListener {
                     val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-//                imgProfile.setImageBitmap(bmp)
+            //                imgProfile.setImageBitmap(bmp)
                     Glide.with(itemView).load(bmp).apply(RequestOptions.circleCropTransform()).into(imgProfile)
                 } // 참조 활용, 이미지뷰에 이미지 설정
             }
@@ -53,7 +53,7 @@ class SearchAdapter(private val context: Fragment) :
             itemView.setOnClickListener {
                 val pos = adapterPosition
                 if(pos != RecyclerView.NO_POSITION){
-                    itemClickListner.OnItemClick(itemView,pos)
+                    itemClickListner.onItemClick(itemView,pos)
                 }
             }
         }
@@ -65,7 +65,7 @@ class SearchAdapter(private val context: Fragment) :
     }
     ///////////////////////////////아이템 클릭
     interface OnItemClickListner{
-        fun OnItemClick(view: View, position: Int)
+        fun onItemClick(view: View, position: Int)
     }
     fun setOnItemClickListner(onItemClickListner: OnItemClickListner){
         itemClickListner = onItemClickListner

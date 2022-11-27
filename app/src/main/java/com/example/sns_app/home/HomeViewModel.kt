@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sns_app.home.FollowDto
-import com.example.sns_app.Posting.PostingData
+import com.example.sns_app.posting.PostingData
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,10 +24,10 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun createList(uidList: MutableSet<String>) { // 유저 목록을 전달 받음
-        itemsCollectionRef.get().addOnSuccessListener {// 게시글 정보를 참조
+        itemsCollectionRef.addSnapshotListener { snapshot, _ ->// 게시글 정보를 참조
             val list: MutableList<PostingData> = mutableListOf() // createList 호출 시 리스트 초기화, 기존 문제 해결 부분
-            if (it != null) {
-                for (doc in it) { // 게시글 정보 중에서
+            if (snapshot != null) {
+                for (doc in snapshot) { // 게시글 정보 중에서
                     for (uid in uidList) {
                         if (doc["uid"].toString() == uid) // 팔로잉한 유저 리스트를 찾으면
                             list.add( // 리스트에 추가

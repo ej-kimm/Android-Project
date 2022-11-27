@@ -1,4 +1,4 @@
-package com.example.sns_app.Posting
+package com.example.sns_app.posting
 
 // 글 내용
 data class PostingData( // 어댑터의 init 부분에서 발생하는 오류를 잡기위해 초기화

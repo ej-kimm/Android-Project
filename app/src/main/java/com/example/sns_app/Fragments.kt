@@ -22,8 +22,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sns_app.home.FollowDto
 import com.example.sns_app.home.HomeAdapter
-import com.example.sns_app.Posting.PostingData
-import com.example.sns_app.Search.*
+import com.example.sns_app.posting.PostingData
+import com.example.sns_app.search.*
 import com.example.sns_app.databinding.HomeFragmentBinding
 import com.example.sns_app.databinding.SearchLayoutBinding
 import com.example.sns_app.databinding.UserpostingFramentBinding
@@ -37,11 +37,8 @@ import com.google.firebase.storage.ktx.storage
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-// 게시글 기능 구현 이후 분리
-
 class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
-    lateinit var homeAdapter: HomeAdapter
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
@@ -79,7 +76,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) { // 홈 프레그먼트
 }
 
 class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그먼트, 검색 프레그먼트
-    lateinit var searchAdapter: SearchAdapter
+    private lateinit var searchAdapter: SearchAdapter
     private val searchViewModel by viewModels<SearchViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,7 +122,7 @@ class SearchFragment : Fragment(R.layout.search_layout) { // 테스트 프레그
         //아이템 클릭 이벤트
         val intent = Intent(context,UserPageActivity::class.java)
         searchAdapter.setOnItemClickListner(object : SearchAdapter.OnItemClickListner{
-            override fun OnItemClick(view: View, position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 //해달 클릭 아이템의 name을 가지고 intent
                 val uid = searchViewModel.searchData.value?.get(position)?.uid
 

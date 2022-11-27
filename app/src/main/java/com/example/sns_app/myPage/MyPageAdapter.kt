@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.example.sns_app.Posting.PostingData
-import com.example.sns_app.Posting.UserPostingActivity
+import com.example.sns_app.posting.PostingData
+import com.example.sns_app.posting.UserPostingActivity
 import com.example.sns_app.R
 import com.example.sns_app.databinding.PostLayoutBinding
 import com.google.firebase.auth.ktx.auth
@@ -25,7 +25,7 @@ import com.google.firebase.storage.ktx.storage
 
 
 // 리사이클러뷰 어댑터
-class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
+class MyPageAdapter(uid: String) : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
     private var items: ArrayList<PostingData> = arrayListOf()
     private var postUids : ArrayList<String> = arrayListOf() // postUid List
     private val storage = Firebase.storage
@@ -35,7 +35,7 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
 
     init { // 어댑터 연결 시 어댑터에서 게시글 정보를 가져옴
         db.collection("posting")
-            .whereEqualTo("uid", currentUid)
+            .whereEqualTo("uid", uid)
             .orderBy("time", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, _ ->
                 items.clear() // 기존 리스트 초기화
