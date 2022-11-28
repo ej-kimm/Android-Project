@@ -82,15 +82,7 @@ class UserPageActivity : AppCompatActivity(){
                         Glide.with(my_img).load(bmp).apply(RequestOptions.circleCropTransform()).into(my_img)
                     }
                 }
-                /*
-                //게시물 개수(임시)
-                postCount.text = "0"
-                //팔로잉 수(임시)
-                following.text = "4"
-                //팔로워 수(임시)
-                follower.text = "3"
 
-                 */
             }
 
 
