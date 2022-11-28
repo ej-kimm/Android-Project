@@ -20,6 +20,7 @@ import com.example.sns_app.follow.FollowListActivity
 import com.example.sns_app.login.LoginActivity
 import com.example.sns_app.R
 import com.example.sns_app.databinding.MypageFragmentBinding
+import com.example.sns_app.home.FollowDto
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,6 +37,8 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
     private lateinit var binding: MypageFragmentBinding
     private val db: FirebaseFirestore = Firebase.firestore
     private val usersInformationRef = db.collection("usersInformation")
+    private val followInformationRef = db.collection("follow")
+    private val postingInformationRef = db.collection("posting")
     private val currentUid = Firebase.auth.currentUser!!.uid
     private var filename = ""
     lateinit var mypageAdapter: MyPageAdapter
@@ -61,6 +64,7 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
 //        super.onViewCreated(view, savedInstanceState)
         binding = MypageFragmentBinding.bind(view)
         updateProfileImage() // 초기 화면 구성 시 이미지 로딩
+        updateUserInfo()
 
         // progressBar 추가, 상의 후 다른 View 추가
         val delay = 500L
@@ -121,6 +125,19 @@ class MyPageFragment : Fragment(R.layout.mypage_fragment) { // 마이페이지 �
                     displayImageRef(profileImgRef, binding.mypageMyImg)
                 }
             }
+    }
+    private fun updateUserInfo() {
+        followInformationRef.document(currentUid).get().addOnSuccessListener {
+            val followDto = it.toObject(FollowDto::class.java)
+            if (followDto != null) {
+                binding.followerCount.text = followDto.followers.size.toString()
+                binding.followingCount.text = followDto.followings.size.toString()
+            }
+        }
+        postingInformationRef.whereEqualTo("uid",currentUid).addSnapshotListener { snapshot, _ ->
+            binding.postCount.text = snapshot?.size().toString()
+        }
+
     }
 
     private fun displayImageRef(imageRef: StorageReference?, view: ImageView) { // 이미지를 화면에 띄움

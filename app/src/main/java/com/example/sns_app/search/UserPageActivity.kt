@@ -28,6 +28,8 @@ class UserPageActivity : AppCompatActivity(){
     private val currentUid = Firebase.auth.currentUser!!.uid
     private lateinit var searchUserAdapter: MyPageAdapter
     private lateinit var binding: ActivityUserpageBinding
+    private val followInformationRef = db.collection("follow")
+    private val postingInformationRef = db.collection("posting")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +48,10 @@ class UserPageActivity : AppCompatActivity(){
         //검색한 유저 아이디 받아오기
         val searchUID = intent.getStringExtra("data")
         checkFollow(searchUID) // 해당 유저를 팔로우 했는지 체크
+
+        if(searchUID != null){
+            updateUserInfo(searchUID)
+        }
 
         val my_id = binding.myId
         val my_img = binding.mypageMyImg
@@ -76,12 +82,15 @@ class UserPageActivity : AppCompatActivity(){
                         Glide.with(my_img).load(bmp).apply(RequestOptions.circleCropTransform()).into(my_img)
                     }
                 }
+                /*
                 //게시물 개수(임시)
                 postCount.text = "0"
                 //팔로잉 수(임시)
                 following.text = "4"
                 //팔로워 수(임시)
                 follower.text = "3"
+
+                 */
             }
 
 
@@ -96,6 +105,21 @@ class UserPageActivity : AppCompatActivity(){
         binding.recyclerSearchUser.adapter = searchUserAdapter
         binding.recyclerSearchUser.layoutManager = LinearLayoutManager(this)
         binding.recyclerSearchUser.setHasFixedSize(true) // same height
+    }
+
+    private fun updateUserInfo(searchUID: String) {
+        followInformationRef.document(searchUID).addSnapshotListener { snapshot, _ ->
+            val followDto = snapshot?.toObject(FollowDto::class.java)
+            if (followDto != null) {
+                binding.followerCount.text = followDto.followers.size.toString()
+                binding.followingCount.text = followDto.followings.size.toString()
+                println(followDto.toString())
+            }
+        }
+        postingInformationRef.whereEqualTo("uid",searchUID).get().addOnSuccessListener {
+            binding.postCount.text = it?.size().toString()
+        }
+
     }
 
     private fun followEvent(searchUID: String?) {
